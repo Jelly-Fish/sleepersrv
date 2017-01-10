@@ -105,7 +105,7 @@ public class Cubemap extends AbstractAsset {
         
         for (int i = 0; i < 6; i++) {
             
-            imageBuffer = OpenGLUtils.ioResourceToByteBuffer("cubemaps/hubbledf/" + names[i] + ".png", 8 * 1024);
+            imageBuffer = OpenGLUtils.ioResourceToByteBuffer("fr/com/jellyfish/cubemaps/hubbledf/" + names[i] + ".png", 8 * 1024);
             if (!stbi_info_from_memory(imageBuffer, w, h, comp)) throw new IOException("Failed to read image information: " + 
                 stbi_failure_reason());
             image = stbi_load_from_memory(imageBuffer, w, h, comp, 0);

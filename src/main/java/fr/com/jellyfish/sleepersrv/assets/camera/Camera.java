@@ -1,5 +1,6 @@
 package fr.com.jellyfish.sleepersrv.assets.camera;
 
+import fr.com.jellyfish.sleepersrv.assets.entities.Sphere;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -11,14 +12,10 @@ public class Camera {
 
     public Vector3f linearAcc = new Vector3f();
     public Vector3f linearVel = new Vector3f();
-    public float linearDamping = 0.08f;
-
-    /**
-     * ALWAYS rotation about the local XYZ axes of the camera!
-     */
+    float linearDamping = 0.08f;
     public Vector3f angularAcc = new Vector3f();
     public Vector3f angularVel = new Vector3f();
-    public float angularDamping = 0.5f;
+    float angularDamping = 0.5f;
 
     public Vector3d position = new Vector3d(0, 0, 10);
     public Quaternionf rotation = new Quaternionf();
@@ -37,6 +34,10 @@ public class Camera {
         linearVel.mul(1.0f - linearDamping * dt);
         
         return this;
+    }
+    
+    public void focus(final Sphere sphere) {
+        // FIXME re-center cam on Sphere mdl.
     }
 
     public Vector3f right(Vector3f dest) {

@@ -5,12 +5,12 @@ varying vec2 pointCoord;
 
 float smootStep(float x) {
   float c = clamp(x, 0.0, 1.0);
-  c = c * c * (3.0 - 2.0 * c); // <- smoothstep
+  c = c * c * (3.0 - 2.0 * c); // smoothstep
   return c;
 }
 
 void main(void) {
   float len = 1.0 - length(pointCoord);
-  vec4 color = vec4(1.1, 1.1, 1.8, 1.0) * smootStep(len);
+  vec4 color = vec4(4.0, 0.0, 0.0, 2.0) * smootStep(len);
   gl_FragColor = color;
 }

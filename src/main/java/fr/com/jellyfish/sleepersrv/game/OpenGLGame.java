@@ -3,6 +3,7 @@ package fr.com.jellyfish.sleepersrv.game;
 import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
 import fr.com.jellyfish.sleepersrv.assets.camera.Camera;
 import fr.com.jellyfish.sleepersrv.assets.entities.Asteroid;
+import fr.com.jellyfish.sleepersrv.assets.entities.PlasmaPool;
 import fr.com.jellyfish.sleepersrv.assets.entities.Sphere;
 import fr.com.jellyfish.sleepersrv.assets.globals.Cubemap;
 import fr.com.jellyfish.sleepersrv.assets.globals.VCompass;
@@ -15,8 +16,8 @@ import fr.com.jellyfish.sleepersrv.opengl.util.ShaderUtils;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.joml.FrustumIntersection;
@@ -40,13 +41,12 @@ import static org.lwjgl.system.MemoryUtil.*;
  */
 public class OpenGLGame {
 
-    private Sphere gball;
-    
     private GLCapabilities glCapabilities;
     private final Camera camera = new Camera();
     private final Cubemap cubeMap = new Cubemap();
     private final VCompass vCompass = new VCompass();
-    private final List<AbstractAsset> assets = new ArrayList<>();
+    private PlasmaPool plasmaPool;
+    private final Map<String, AbstractAsset> assets = new HashMap<>();
     private long window;
 
     private int defaultProg;
@@ -59,6 +59,10 @@ public class OpenGLGame {
     private int sphere_projUniform;
     private int sphere_modelUniform;
     
+    private int plasmaProg;
+    private int plasma_projUniform;
+    private long lastShotTime = 0L;
+    
     private final float straveThrusterAccFactor = 20.0f;
     private final float mainThrusterAccFactor = 50.0f;
     private final float maxLinearVel = 200.0f;
@@ -66,8 +70,8 @@ public class OpenGLGame {
     public boolean leftMouseDown = false;
     public boolean rightMouseDown = false;
 
-    public float mouseX = 0.0f;
-    public float mouseY = 0.0f;
+    private float mouseX = 0.0f;
+    private float mouseY = 0.0f;
     private long lastTime = System.nanoTime();
 
     private final Vector3f tempVect = new Vector3f();
@@ -87,7 +91,7 @@ public class OpenGLGame {
     
     private float dt;
 
-    private void init() throws IOException {
+    void init() throws IOException {
 
         if (!glfwInit()) {
             throw new IllegalStateException("Unable to initialize GLFW");
@@ -112,7 +116,7 @@ public class OpenGLGame {
             (vidmode.height() - FrameVars.V_HEIGHT) / 2
         );
         
-        glfwSetCursor(window, glfwCreateStandardCursor(GLFW_IBEAM_CURSOR));
+        glfwSetCursor(window, glfwCreateStandardCursor(GLFW_HAND_CURSOR));
 
         glfwSetKeyCallback(window, keyCallback = new KeyBoardManager());
         glfwSetCursorPosCallback(window, mousePosCallBack = new MousePositionManager(this));        
@@ -137,15 +141,18 @@ public class OpenGLGame {
         this.cubeMap.createCubemapProg();
         this.defaultProg = this.createDefaultProg();
         this.sphereProg = this.createSphereProg();
-        this.vCompass.createMesh();
+        this.plasmaProg = this.createPlasmaBallProg();
+        this.vCompass.createMesh();        
         
         for (int i = 0; i < 200 ; ++i) {
-            this.assets.add(new Asteroid(camera, frustumIntersection, viewMatrix, matrixBuffer, 
+            this.assets.put(Asteroid.class.getSimpleName() + i, new Asteroid(camera, frustumIntersection, viewMatrix, matrixBuffer, 
                 default_modelUniform, defaultProg));
         }
         
-        this.assets.add(new Sphere(camera, frustumIntersection, viewMatrix, matrixBuffer, 
+        this.assets.put(Sphere.class.getSimpleName(), new Sphere(camera, frustumIntersection, viewMatrix, matrixBuffer, 
             sphere_modelUniform, sphereProg, this));
+        
+        this.plasmaPool = new PlasmaPool(this, this.frustumIntersection, this.plasmaProg);
         
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnable(GL_DEPTH_TEST);
@@ -153,40 +160,58 @@ public class OpenGLGame {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     }
     
-    private int createDefaultProg() throws IOException {
-        
-        int vshader = ShaderUtils.createShader("fr/com/jellyfish/game/default_shader/default.vs", GL_VERTEX_SHADER);
-        int fshader = ShaderUtils.createShader("fr/com/jellyfish/game/default_shader/default.fs", GL_FRAGMENT_SHADER);
-        int prog = ProgUtils.createProgram(vshader, fshader);
-        glUseProgram(prog);
-        default_viewUniform = glGetUniformLocation(prog, "view");
-        default_projUniform = glGetUniformLocation(prog, "proj");
-        default_modelUniform = glGetUniformLocation(prog, "model");
-        glUseProgram(0); 
-        
-        return prog;
+    void run() {
+
+        try {
+
+            init();
+            loop();
+            if (debugProc != null) debugProc.free();
+            mousePosCallBack.free();            
+            keyCallback.free();           
+            buttonCallback.free();            
+            glfwDestroyWindow(window);
+
+        } catch (final Exception eX) {
+            Logger.getLogger(OpenGLGame.class.getName()).log(Level.SEVERE, null, eX);
+        } finally {
+            glfwTerminate();
+        }
     }
     
-    private int createSphereProg() throws IOException {
+    void loop() {
+
+        long thisTime = 0L;
         
-        int vshader = ShaderUtils.createShader("fr/com/jellyfish/game/sphere_shader/sphere.vs", GL_VERTEX_SHADER);
-        int fshader = ShaderUtils.createShader("fr/com/jellyfish/game/sphere_shader/sphere.fs", GL_FRAGMENT_SHADER);
-        int prog = ProgUtils.createProgram(vshader, fshader);
-        glUseProgram(prog);
-        sphere_viewUniform = glGetUniformLocation(prog, "view");
-        sphere_projUniform = glGetUniformLocation(prog, "proj");
-        sphere_modelUniform = glGetUniformLocation(prog, "model");
-        glUseProgram(0); 
-        
-        return prog;
+        while (!glfwWindowShouldClose(window)) {
+
+            glfwPollEvents();
+            glViewport(0, 0, FrameVars.V_WIDTH, FrameVars.V_HEIGHT);
+            
+            thisTime = System.nanoTime();
+            dt = (thisTime - lastTime) / 1E9f;
+            lastTime = thisTime;
+            
+            this.camera.update(dt);
+            this.plasmaPool.update(dt);
+            
+            update();            
+            updateControls();
+            render();
+            glfwSwapBuffers(window);
+        }
     }
-
-    private void update() {
-
-        long thisTime = System.nanoTime();
-        dt = (thisTime - lastTime) / 1E9f;
-        lastTime = thisTime;
-        camera.update(dt);
+    
+    void render() {
+        
+        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        this.cubeMap.draw();
+        this.vCompass.drawCompass(projMatrix, matrixBuffer, viewMatrix, maxLinearVel, camera);
+        this.plasmaPool.draw();
+        for (AbstractAsset asset : assets.values()) asset.draw();        
+    }
+    
+    void update() {
 
         projMatrix.setPerspective((float) Math.toRadians(40.0f),
                 (float) FrameVars.V_WIDTH / FrameVars.V_HEIGHT, 0.1f, 5000.0f);
@@ -208,10 +233,13 @@ public class OpenGLGame {
         glUniformMatrix4fv(sphere_viewUniform, false, viewMatrix.get(matrixBuffer));
         glUniformMatrix4fv(sphere_projUniform, false, projMatrix.get(matrixBuffer));
         
-        updateControls();
+        /* Update the shot shader */
+        glUseProgram(plasmaProg);
+        glUniformMatrix4fv(plasma_projUniform, false, matrixBuffer);
+        
     }
-
-    private void updateControls() {
+    
+    void updateControls() {
 
         camera.linearAcc.zero();
         float rotZ = 0.0f;
@@ -248,6 +276,15 @@ public class OpenGLGame {
             camera.linearAcc.fma(-straveThrusterAccFactor, camera.up(tempVect));
         }
 
+        if (keyCallback.kDown[GLFW_KEY_SPACE] && (lastTime - lastShotTime >= 1E6 * PlasmaPool.SPAWN_MS)) {
+            this.plasmaPool.shoot();
+            lastShotTime = lastTime;
+        }   
+        
+        if (keyCallback.kDown[GLFW_KEY_ENTER]) {
+            camera.focus((Sphere) assets.get(Sphere.class.getSimpleName()));
+        }   
+        
         if (rightMouseDown) {
             camera.angularAcc.set(2.0f * mouseY * mouseY * mouseY, 2.0f * mouseX * mouseX * mouseX, rotZ);
         } else if (!rightMouseDown) {
@@ -259,44 +296,45 @@ public class OpenGLGame {
             camera.linearVel.normalize().mul(maxLinearVel);
         }
     }
-
-    private void render() {
-        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-        this.cubeMap.draw();
-        this.vCompass.drawCompass(projMatrix, matrixBuffer, viewMatrix, maxLinearVel, camera);
-        for (AbstractAsset asset : assets) asset.draw();
+    
+    private int createDefaultProg() throws IOException {
         
+        int vshader = ShaderUtils.createShader("fr/com/jellyfish/game/default_shader/default.vs", GL_VERTEX_SHADER);
+        int fshader = ShaderUtils.createShader("fr/com/jellyfish/game/default_shader/default.fs", GL_FRAGMENT_SHADER);
+        int prog = ProgUtils.createProgram(vshader, fshader);
+        glUseProgram(prog);
+        default_viewUniform = glGetUniformLocation(prog, "view");
+        default_projUniform = glGetUniformLocation(prog, "proj");
+        default_modelUniform = glGetUniformLocation(prog, "model");
+        glUseProgram(0); 
+        
+        return prog;
+    }
+    
+    private int createSphereProg() throws IOException {
+        
+        int vshader = ShaderUtils.createShader("fr/com/jellyfish/game/sphere_shader/sphere.vs", GL_VERTEX_SHADER);
+        int fshader = ShaderUtils.createShader("fr/com/jellyfish/game/sphere_shader/sphere.fs", GL_FRAGMENT_SHADER);
+        int prog = ProgUtils.createProgram(vshader, fshader);
+        glUseProgram(prog);
+        sphere_viewUniform = glGetUniformLocation(prog, "view");
+        sphere_projUniform = glGetUniformLocation(prog, "proj");
+        sphere_modelUniform = glGetUniformLocation(prog, "model");
+        glUseProgram(0); 
+        
+        return prog;
     }
 
-    private void loop() {
+    private int createPlasmaBallProg() throws IOException {
+        
+        int vshader = ShaderUtils.createShader("fr/com/jellyfish/game/shot.vs", GL_VERTEX_SHADER);
+        int fshader = ShaderUtils.createShader("fr/com/jellyfish/game/shot.fs", GL_FRAGMENT_SHADER);
+        int prog = ProgUtils.createProgram(vshader, fshader);
+        glUseProgram(prog);
+        plasma_projUniform = glGetUniformLocation(prog, "proj");
+        glUseProgram(0);
 
-        while (!glfwWindowShouldClose(window)) {
-
-            glfwPollEvents();
-            glViewport(0, 0, FrameVars.V_WIDTH, FrameVars.V_HEIGHT);
-            update();
-            render();
-            glfwSwapBuffers(window);
-        }
-    }
-
-    void run() {
-
-        try {
-
-            init();
-            loop();
-            if (debugProc != null) debugProc.free();
-            mousePosCallBack.free();            
-            keyCallback.free();           
-            buttonCallback.free();            
-            glfwDestroyWindow(window);
-
-        } catch (final Exception eX) {
-            Logger.getLogger(OpenGLGame.class.getName()).log(Level.SEVERE, null, eX);
-        } finally {
-            glfwTerminate();
-        }
+        return prog;
     }
 
     /* *********************************************************************** */
@@ -318,5 +356,28 @@ public class OpenGLGame {
         return dt;
     }
 
+    public float getMouseX() {
+        return mouseX;
+    }
+
+    public void setMouseX(final float f) {
+        this.mouseX = f;
+    }
+    
+    public float getMouseY() {
+        return mouseY;
+    }
+    
+    public void setMouseY(final float f) {
+        this.mouseY = f;
+    }
+
+    public Vector3f getTempVect() {
+        return tempVect;
+    }
+        
+    public Matrix4f getInvViewProjMatrix() {
+        return invViewProjMatrix;
+    }
     
 }
