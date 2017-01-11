@@ -36,9 +36,21 @@ public class Camera {
         return this;
     }
     
-    public void focus(final Sphere sphere) {
-        // FIXME re-center cam on Sphere mdl.
-    }
+    public void freeze() {        
+        // Freeze cam mvt.
+        angularAcc.x = 0f;
+        angularAcc.y = 0f;
+        angularAcc.z = 0f;
+        angularVel.x = 0f;
+        angularVel.y = 0f;
+        angularVel.z = 0f;        
+    }    
+    
+    public void focusMdl(final Sphere sphere) {          
+        // re-center on main mdl. Param0 = main mdl.
+        this.freeze();
+        rotation = new Quaternionf();
+    }    
 
     public Vector3f right(Vector3f dest) {
         return rotation.positiveX(dest);

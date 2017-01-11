@@ -40,6 +40,13 @@ import static org.lwjgl.opengl.GL20.glUseProgram;
  */
 public class Sphere extends AbstractAsset {
     
+    /**
+     * Velocity constants.
+     */
+    public static final float STRAFF_THRUST_FACTOR = 1024;    
+    public static final float VELOCITY_THRUST_FACTOR = 1024f;        
+    public static final float MAX_LINEAR_VELOCITY = 1024f;
+    
     private float scale;
     private final int positionVbo;
     private final int normalsVbo;

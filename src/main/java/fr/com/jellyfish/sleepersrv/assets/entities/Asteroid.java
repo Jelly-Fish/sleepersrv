@@ -33,7 +33,7 @@ import static org.lwjgl.opengl.GL20.glUseProgram;
  */
 public class Asteroid extends AbstractAsset {
     
-    private static final float MAX_RADIUS = 20.0f;
+    private static final float MAX_RADIUS = 30.0f;
     private double x, y, z;
     private float scale;
     private final int positionVbo;
@@ -57,9 +57,9 @@ public class Asteroid extends AbstractAsset {
         this.default_modelUniform = default_modelUniform;
         this.defaultProg = defaultProg;
         
-        this.x = (Math.random() - 0.5) * GameConst.RAND_SPREADOUT;
-        this.y = (Math.random() - 0.5) * GameConst.RAND_SPREADOUT;
-        this.z = ((Math.random() - 0.5) * GameConst.RAND_SPREADOUT) - 2800f;
+        this.x = (Math.random() - 0.5) * GameConst.SPREADOUT_3000;
+        this.y = (Math.random() - 0.5) * GameConst.SPREADOUT_3000;
+        this.z = ((Math.random() - 0.5) * GameConst.SPREADOUT_3000) - 5800f;
         this.scale = (float) ((Math.random() * 0.5 + 0.5) * Asteroid.MAX_RADIUS);
         
         final WavefrontMeshLoader loader = new WavefrontMeshLoader();

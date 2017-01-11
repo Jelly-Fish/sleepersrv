@@ -63,10 +63,6 @@ public class OpenGLGame {
     private int plasma_projUniform;
     private long lastShotTime = 0L;
     
-    private final float straveThrusterAccFactor = 20.0f;
-    private final float mainThrusterAccFactor = 50.0f;
-    private final float maxLinearVel = 200.0f;
-
     public boolean leftMouseDown = false;
     public boolean rightMouseDown = false;
 
@@ -206,7 +202,7 @@ public class OpenGLGame {
         
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
         this.cubeMap.draw();
-        this.vCompass.drawCompass(projMatrix, matrixBuffer, viewMatrix, maxLinearVel, camera);
+        this.vCompass.drawCompass(projMatrix, matrixBuffer, viewMatrix, Sphere.MAX_LINEAR_VELOCITY, camera);
         this.plasmaPool.draw();
         for (AbstractAsset asset : assets.values()) asset.draw();        
     }
@@ -245,19 +241,19 @@ public class OpenGLGame {
         float rotZ = 0.0f;
         
         if (keyCallback.kDown[GLFW_KEY_O]) {
-            camera.linearAcc.fma(mainThrusterAccFactor, camera.forward(tempVect));
+            camera.linearAcc.fma(Sphere.VELOCITY_THRUST_FACTOR, camera.forward(tempVect));
         }
         
         if (keyCallback.kDown[GLFW_KEY_L]) {
-            camera.linearAcc.fma(-mainThrusterAccFactor, camera.forward(tempVect));
+            camera.linearAcc.fma(-Sphere.VELOCITY_THRUST_FACTOR, camera.forward(tempVect));
         }
         
         if (keyCallback.kDown[GLFW_KEY_RIGHT]) {
-            camera.linearAcc.fma(straveThrusterAccFactor, camera.right(tempVect));
+            camera.linearAcc.fma(Sphere.STRAFF_THRUST_FACTOR, camera.right(tempVect));
         }
         
         if (keyCallback.kDown[GLFW_KEY_LEFT]) {
-            camera.linearAcc.fma(-straveThrusterAccFactor, camera.right(tempVect));
+            camera.linearAcc.fma(-Sphere.STRAFF_THRUST_FACTOR, camera.right(tempVect));
         }
         
         if (keyCallback.kDown[GLFW_KEY_K]) {
@@ -269,32 +265,34 @@ public class OpenGLGame {
         }
         
         if (keyCallback.kDown[GLFW_KEY_UP]) {
-            camera.linearAcc.fma(straveThrusterAccFactor, camera.up(tempVect));
+            camera.linearAcc.fma(Sphere.STRAFF_THRUST_FACTOR, camera.up(tempVect));
         }
         
         if (keyCallback.kDown[GLFW_KEY_DOWN]) {
-            camera.linearAcc.fma(-straveThrusterAccFactor, camera.up(tempVect));
+            camera.linearAcc.fma(-Sphere.STRAFF_THRUST_FACTOR, camera.up(tempVect));
         }
 
         if (keyCallback.kDown[GLFW_KEY_SPACE] && (lastTime - lastShotTime >= 1E6 * PlasmaPool.SPAWN_MS)) {
             this.plasmaPool.shoot();
             lastShotTime = lastTime;
-        }   
+        }  
         
+        if (keyCallback.kDown[GLFW_KEY_P]) camera.freeze();        
         if (keyCallback.kDown[GLFW_KEY_ENTER]) {
-            camera.focus((Sphere) assets.get(Sphere.class.getSimpleName()));
-        }   
+            camera.focusMdl((Sphere) assets.get(Sphere.class.getSimpleName()));
+        } 
         
         if (rightMouseDown) {
-            camera.angularAcc.set(2.0f * mouseY * mouseY * mouseY, 2.0f * mouseX * mouseX * mouseX, rotZ);
+            camera.angularAcc.set(2.0f * mouseY * mouseY * mouseY, 2.0f * mouseX * mouseX * mouseX, rotZ);            
         } else if (!rightMouseDown) {
             camera.angularAcc.set(0, 0, rotZ);
         }
         
         double linearVelAbs = camera.linearVel.length();
-        if (linearVelAbs > maxLinearVel) {
-            camera.linearVel.normalize().mul(maxLinearVel);
-        }
+        if (linearVelAbs > Sphere.MAX_LINEAR_VELOCITY) {
+            camera.linearVel.normalize().mul(Sphere.MAX_LINEAR_VELOCITY);
+        }        
+        
     }
     
     private int createDefaultProg() throws IOException {
