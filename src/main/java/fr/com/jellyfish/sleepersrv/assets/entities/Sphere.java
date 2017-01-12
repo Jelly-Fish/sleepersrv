@@ -19,8 +19,9 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_NORMAL_ARRAY;
-import static org.lwjgl.opengl.GL11.GL_POINTS;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.GL_VERTEX_ARRAY;
 import static org.lwjgl.opengl.GL11.glDisableClientState;
 import static org.lwjgl.opengl.GL11.glDrawArrays;
 import static org.lwjgl.opengl.GL11.glEnableClientState;
@@ -77,7 +78,6 @@ public class Sphere extends AbstractAsset {
         final WavefrontMeshLoader loader = new WavefrontMeshLoader();
         
         try {
-            // FIXME : find something better than a golfball for a sphere.
             this.mesh = loader.loadMesh("fr/com/jellyfish/mdls/golfball.obj.zip");
         } catch (final IOException iOEx) {
             Logger.getLogger(Asteroid.class.getName()).log(Level.SEVERE, null, iOEx);
@@ -117,7 +117,8 @@ public class Sphere extends AbstractAsset {
             //modelMatrix.rotate(rotation);
             modelMatrix.scale(scale);
             glUniformMatrix4fv(default_modelUniform, false, modelMatrix.get(matrixBuffer));
-            glDrawArrays(GL_POINTS, 0, mesh.numVertices);
+            glDrawArrays(GL_TRIANGLES, 0, mesh.numVertices);
+            //glDrawArrays(GL_POINTS, 0, mesh.numVertices);
             glDrawArrays(GL_QUADS, 0, mesh.numVertices);
         }
         

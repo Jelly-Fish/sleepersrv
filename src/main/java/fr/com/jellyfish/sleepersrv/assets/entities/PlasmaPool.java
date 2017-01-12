@@ -30,9 +30,9 @@ public class PlasmaPool extends AbstractAsset {
     public static final int SPAWN_MS = 124;
     private static final int MAX_PLASMA = 1024;
     private static final float MAX_LIFE = 30.0f;
-    private static final float DBL_MARGIN = 1.8f;
-    private static final float PLASMA_VELOCITY = 50.0f;
-    private static final float PLASMA_SIZE = 0.3f;
+    private static final float DBL_MARGIN = 2.2f;
+    private static final float PLASMA_VELOCITY = 300.0f;
+    private static final float PLASMA_SIZE = 0.7f;
     
     private final FloatBuffer shotsVertices = BufferUtils.createFloatBuffer(6 * 6 * MAX_PLASMA);
     
