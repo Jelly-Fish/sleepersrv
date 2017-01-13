@@ -43,7 +43,7 @@ public class VCompass extends AbstractAsset {
     private WavefrontMeshLoader.Mesh mesh;
     
     @Override
-    public void draw() { 
+    public void render() { 
         throw new UnsupportedOperationException();
     }
     

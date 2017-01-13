@@ -201,10 +201,10 @@ public class OpenGLGame {
     void render() {
         
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-        this.cubeMap.draw();
+        this.cubeMap.render();
         this.vCompass.drawCompass(projMatrix, matrixBuffer, viewMatrix, Sphere.MAX_LINEAR_VELOCITY, camera);
-        this.plasmaPool.draw();
-        for (AbstractAsset asset : assets.values()) asset.draw();        
+        this.plasmaPool.render();
+        for (AbstractAsset asset : assets.values()) asset.render();        
     }
     
     void update() {

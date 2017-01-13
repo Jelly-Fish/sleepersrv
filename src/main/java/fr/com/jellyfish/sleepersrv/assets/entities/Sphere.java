@@ -26,6 +26,8 @@ import static org.lwjgl.opengl.GL11.glDisableClientState;
 import static org.lwjgl.opengl.GL11.glDrawArrays;
 import static org.lwjgl.opengl.GL11.glEnableClientState;
 import static org.lwjgl.opengl.GL11.glNormalPointer;
+import static org.lwjgl.opengl.GL11.glRotatef;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 import static org.lwjgl.opengl.GL11.glVertexPointer;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
@@ -59,7 +61,8 @@ public class Sphere extends AbstractAsset {
     private final int default_modelUniform;
     private final int defaultProg;
     private final OpenGLGame game;
-    private Quaternionf rotation = new Quaternionf(0f, 0f, 0f);
+    private Quaternionf rotation = new Quaternionf(0f, 0f, 0f);    
+    //private float axis = 0.001f;
     
     public Sphere(final Camera camera, final FrustumIntersection frustumIntersection, 
         final Matrix4f modelMatrix, final FloatBuffer matrixBuffer, final int default_modelUniform,
@@ -78,7 +81,7 @@ public class Sphere extends AbstractAsset {
         final WavefrontMeshLoader loader = new WavefrontMeshLoader();
         
         try {
-            this.mesh = loader.loadMesh("fr/com/jellyfish/mdls/golfball.obj.zip");
+            this.mesh = loader.loadMesh("fr/com/jellyfish/mdls/goldbergpolyhedron.obj.zip"); 
         } catch (final IOException iOEx) {
             Logger.getLogger(Asteroid.class.getName()).log(Level.SEVERE, null, iOEx);
         }
@@ -94,7 +97,7 @@ public class Sphere extends AbstractAsset {
     }
     
     @Override
-    public void draw() {
+    public void render() {
         
         glUseProgram(defaultProg);
         glBindBuffer(GL_ARRAY_BUFFER, positionVbo);
@@ -105,21 +108,18 @@ public class Sphere extends AbstractAsset {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         
         float tmpx = (float) camera.rotation.positiveX(new Vector3f()).x - 1f;
-        float tmpy = (float) camera.rotation.positiveY(new Vector3f()).y - 6f;
-        float tmpz = (float) camera.rotation.positiveZ(new Vector3f()).z - 28f;
-        
-        //rotation.y += .001f;
-        //rotation.integrate(game.getDt(), rotation.x, rotation.y, rotation.z);
+        float tmpy = (float) camera.rotation.positiveY(new Vector3f()).y - 3f;
+        float tmpz = (float) camera.rotation.positiveZ(new Vector3f()).z - 20f;
+
+        //axis = axis > 360f ? 0.1f : axis + 0.1f;
         
         if (frustumIntersection.testSphere(tmpx, tmpy, tmpz, scale)) {
+            //glRotatef(10f, tmpx, tmpy, tmpz);
             modelMatrix.translation(tmpx, tmpy, tmpz); 
-            //modelMatrix.rotate(camera.rotation);
-            //modelMatrix.rotate(rotation);
-            modelMatrix.scale(scale);
+            modelMatrix.rotate(camera.rotation);
+            modelMatrix.scale(scale);            
             glUniformMatrix4fv(default_modelUniform, false, modelMatrix.get(matrixBuffer));
             glDrawArrays(GL_TRIANGLES, 0, mesh.numVertices);
-            //glDrawArrays(GL_POINTS, 0, mesh.numVertices);
-            glDrawArrays(GL_QUADS, 0, mesh.numVertices);
         }
         
         glDisableClientState(GL_NORMAL_ARRAY);

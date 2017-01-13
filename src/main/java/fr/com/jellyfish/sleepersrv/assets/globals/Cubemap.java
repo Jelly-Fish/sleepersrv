@@ -57,7 +57,7 @@ public class Cubemap extends AbstractAsset {
     public int cubemap_invViewProjUniform; 
     
     @Override
-    public void draw() {
+    public void render() {
         
         glUseProgram(cubemapProgram);
         glVertexPointer(2, GL_FLOAT, 0, quadVertices);

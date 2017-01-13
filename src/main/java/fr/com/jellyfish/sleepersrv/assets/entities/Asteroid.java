@@ -81,7 +81,7 @@ public class Asteroid extends AbstractAsset {
     }
     
     @Override
-    public void draw() {
+    public void render() {
     
         glUseProgram(defaultProg);
         glBindBuffer(GL_ARRAY_BUFFER, positionVbo);

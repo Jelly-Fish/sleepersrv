@@ -61,7 +61,7 @@ public class PlasmaPool extends AbstractAsset {
     }
     
     @Override
-    public void draw() {
+    public void render() {
         
         shotsVertices.clear();
         int num = 0;
