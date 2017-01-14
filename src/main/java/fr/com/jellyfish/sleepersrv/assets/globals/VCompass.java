@@ -42,17 +42,12 @@ public class VCompass extends AbstractAsset {
 
     private WavefrontMeshLoader.Mesh mesh;
     
-    @Override
-    public void render() { 
-        throw new UnsupportedOperationException();
-    }
-    
     public void createMesh() throws IOException {
         WavefrontMeshLoader loader = new WavefrontMeshLoader();
         mesh = loader.loadMesh("fr/com/jellyfish/game/sphere.obj.zip");
     }
     
-    public void drawCompass(final Matrix4f projMatrix, final FloatBuffer matrixBuffer, 
+    public void render(final Matrix4f projMatrix, final FloatBuffer matrixBuffer, 
             final Matrix4f viewMatrix, final float maxLinearVel, final Camera camera) {
         
         glUseProgram(0);
@@ -85,8 +80,8 @@ public class VCompass extends AbstractAsset {
         glVertex3f(0, 0, 1);
         glColor4f(1, 1, 1, 1);
         glVertex3f(0, 0, 0);
-        glVertex3f(camera.linearVel.x / maxLinearVel, camera.linearVel.y / maxLinearVel, 
-            camera.linearVel.z / maxLinearVel);
+        glVertex3f(camera.linearVelocity.x / maxLinearVel, camera.linearVelocity.y / maxLinearVel, 
+            camera.linearVelocity.z / maxLinearVel);
         glEnd();
         glPopMatrix();
         glMatrixMode(GL_PROJECTION);
@@ -95,5 +90,14 @@ public class VCompass extends AbstractAsset {
         glDisableClientState(GL_NORMAL_ARRAY);
         glDisable(GL_BLEND);    
     }
-
+    
+    @Override
+    public void update(final float dt) { }
+    
+        
+    @Override
+    public void render() { 
+        throw new UnsupportedOperationException();
+    }
+    
 }

@@ -119,5 +119,8 @@ public class Cubemap extends AbstractAsset {
             glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
         }
     }
+        
+    @Override
+    public void update(final float dt) { }
     
 }

@@ -8,32 +8,31 @@ package fr.com.jellyfish.sleepersrv.assets.entities;
 import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
 import fr.com.jellyfish.sleepersrv.assets.camera.Camera;
 import fr.com.jellyfish.sleepersrv.game.OpenGLGame;
+import fr.com.jellyfish.sleepersrv.opengl.util.ProgUtils;
+import fr.com.jellyfish.sleepersrv.opengl.util.ShaderUtils;
 import fr.com.jellyfish.sleepersrv.opengl.util.WavefrontMeshLoader;
 import java.io.IOException;
-import java.nio.FloatBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.joml.FrustumIntersection;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_NORMAL_ARRAY;
-import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11.GL_VERTEX_ARRAY;
 import static org.lwjgl.opengl.GL11.glDisableClientState;
 import static org.lwjgl.opengl.GL11.glDrawArrays;
 import static org.lwjgl.opengl.GL11.glEnableClientState;
 import static org.lwjgl.opengl.GL11.glNormalPointer;
-import static org.lwjgl.opengl.GL11.glRotatef;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 import static org.lwjgl.opengl.GL11.glVertexPointer;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL15.glBindBuffer;
 import static org.lwjgl.opengl.GL15.glBufferData;
 import static org.lwjgl.opengl.GL15.glGenBuffers;
+import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
+import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
+import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 
@@ -54,29 +53,29 @@ public class Sphere extends AbstractAsset {
     private final int positionVbo;
     private final int normalsVbo;
     private WavefrontMeshLoader.Mesh mesh;
+    private final OpenGLGame game;
     private final Camera camera;
     private final FrustumIntersection frustumIntersection;
-    private final Matrix4f modelMatrix;
-    private final FloatBuffer matrixBuffer;
-    private final int default_modelUniform;
-    private final int defaultProg;
-    private final OpenGLGame game;
-    private Quaternionf rotation = new Quaternionf(0f, 0f, 0f);    
-    //private float axis = 0.001f;
+    private int default_modelUniform;
+    private int default_viewUniform;
+    private int default_projUniform;
+    private int defaultProg; 
+    private double tmpRotationVal = 0.1f;
+    private static final float ROTATION_Y_VAL = 0.3f;
     
-    public Sphere(final Camera camera, final FrustumIntersection frustumIntersection, 
-        final Matrix4f modelMatrix, final FloatBuffer matrixBuffer, final int default_modelUniform,
-        final int defaultProg, final OpenGLGame game) {
+    public Sphere(final OpenGLGame game, final Camera camera, final FrustumIntersection frustumIntersection) {
+                
+        try {
+            createSphereProg();
+        } catch (final IOException iOEx) {
+            Logger.getLogger(Asteroid.class.getName()).log(Level.SEVERE, null, iOEx);
+        }
         
+        this.game = game;
         this.camera = camera;
         this.frustumIntersection = frustumIntersection;
-        this.modelMatrix = modelMatrix;
-        this.matrixBuffer = matrixBuffer;
-        this.default_modelUniform = default_modelUniform;
-        this.defaultProg = defaultProg;
-        this.game = game;
 
-        this.scale = 3f;
+        this.scale = 2.6f;
         
         final WavefrontMeshLoader loader = new WavefrontMeshLoader();
         
@@ -96,9 +95,21 @@ public class Sphere extends AbstractAsset {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     
+    private void createSphereProg() throws IOException {
+        
+        int vshader = ShaderUtils.createShader("fr/com/jellyfish/game/sphere_shader/sphere.vs", GL_VERTEX_SHADER);
+        int fshader = ShaderUtils.createShader("fr/com/jellyfish/game/sphere_shader/sphere.fs", GL_FRAGMENT_SHADER);
+        this.defaultProg = ProgUtils.createProgram(vshader, fshader);
+        glUseProgram(this.defaultProg);
+        default_viewUniform = glGetUniformLocation(this.defaultProg, "view");
+        default_projUniform = glGetUniformLocation(this.defaultProg, "proj");
+        default_modelUniform = glGetUniformLocation(this.defaultProg, "model");
+        glUseProgram(0); 
+    }
+    
     @Override
     public void render() {
-        
+
         glUseProgram(defaultProg);
         glBindBuffer(GL_ARRAY_BUFFER, positionVbo);
         glVertexPointer(3, GL_FLOAT, 0, 0);
@@ -106,23 +117,39 @@ public class Sphere extends AbstractAsset {
         glBindBuffer(GL_ARRAY_BUFFER, normalsVbo);
         glNormalPointer(GL_FLOAT, 0, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        
+
         float tmpx = (float) camera.rotation.positiveX(new Vector3f()).x - 1f;
         float tmpy = (float) camera.rotation.positiveY(new Vector3f()).y - 3f;
         float tmpz = (float) camera.rotation.positiveZ(new Vector3f()).z - 20f;
 
-        //axis = axis > 360f ? 0.1f : axis + 0.1f;
-        
         if (frustumIntersection.testSphere(tmpx, tmpy, tmpz, scale)) {
-            //glRotatef(10f, tmpx, tmpy, tmpz);
-            modelMatrix.translation(tmpx, tmpy, tmpz); 
-            modelMatrix.rotate(camera.rotation);
-            modelMatrix.scale(scale);            
-            glUniformMatrix4fv(default_modelUniform, false, modelMatrix.get(matrixBuffer));
+                                    
+            game.getViewMatrix().translation(tmpx, tmpy, tmpz);             
+            game.getViewMatrix().rotate(camera.rotation);     
+            game.getViewMatrix().scale(scale);
+              
+            glUniformMatrix4fv(default_modelUniform, false, game.getViewMatrix().get(game.getMatrixBuffer()));
             glDrawArrays(GL_TRIANGLES, 0, mesh.numVertices);
         }
         
         glDisableClientState(GL_NORMAL_ARRAY);
+    }
+        
+    @Override
+    public void update(final float dt) { 
+        
+        /* Rotation this mesh not working.
+        tmpRotationVal = tmpRotationVal > 360f ? 0.1f : tmpRotationVal + ROTATION_Y_VAL;
+        //game.getViewMatrix().rotateY((float) Math.toRadians(tmpRotationVal));       
+        GL11.glRotatef((float) tmpRotationVal, 1.0f, 0.0f, 0.0f);
+        GL11.glRotatef((float) tmpRotationVal, 0.0f, 1.0f, 0.0f);
+        GL11.glRotatef((float) tmpRotationVal, 0.0f, 0.0f, 1.0f);      
+        */
+        
+        glUseProgram(defaultProg);
+        glUniformMatrix4fv(default_viewUniform, false, game.getViewMatrix().get(game.getMatrixBuffer()));
+        glUniformMatrix4fv(default_projUniform, false, game.getProjMatrix().get(game.getMatrixBuffer())); 
+        glUseProgram(0); 
     }
     
 }

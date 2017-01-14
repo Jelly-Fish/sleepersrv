@@ -1,6 +1,6 @@
 package fr.com.jellyfish.sleepersrv.assets.entities;
 
-import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
+import fr.com.jellyfish.sleepersrv.assets.AbstractPool;
 import fr.com.jellyfish.sleepersrv.game.OpenGLGame;
 import java.nio.FloatBuffer;
 import org.joml.FrustumIntersection;
@@ -20,12 +20,13 @@ import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glEnableClientState;
 import static org.lwjgl.opengl.GL11.glTexCoordPointer;
 import static org.lwjgl.opengl.GL11.glVertexPointer;
+import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 
 /**
  * @author thw
  */
-public class PlasmaPool extends AbstractAsset {
+public class PlasmaPool extends AbstractPool {
 
     public static final int SPAWN_MS = 124;
     private static final int MAX_PLASMA = 1024;
@@ -35,7 +36,8 @@ public class PlasmaPool extends AbstractAsset {
     private static final float PLASMA_SIZE = 0.7f;
     
     private final FloatBuffer shotsVertices = BufferUtils.createFloatBuffer(6 * 6 * MAX_PLASMA);
-    
+
+    private final int default_projUniform;
     private final Vector3f tmpVector = new Vector3f();
     private final Vector3d newPosition = new Vector3d();
     private final OpenGLGame game;    
@@ -54,10 +56,12 @@ public class PlasmaPool extends AbstractAsset {
     }
     
     public PlasmaPool(final OpenGLGame game, final FrustumIntersection frustumIntersection,
-        final int prog) {
+        final int prog, final int default_projUniform) {
+        
         this.game = game;
         this.frustumIntersection = frustumIntersection;
         this.prog = prog;
+        this.default_projUniform = default_projUniform;
     }
     
     @Override
@@ -102,7 +106,7 @@ public class PlasmaPool extends AbstractAsset {
                 
         if (num > 0) {
             
-            glUseProgram(this.prog);
+            glUseProgram(prog);
             glDepthMask(false);
             glEnable(GL_BLEND);
             glVertexPointer(4, GL_FLOAT, 6 * 4, shotsVertices);
@@ -114,6 +118,7 @@ public class PlasmaPool extends AbstractAsset {
             glDisableClientState(GL_TEXTURE_COORD_ARRAY);
             glDisable(GL_BLEND);
             glDepthMask(true);
+            glUseProgram(0);
         }
     }
     
@@ -131,11 +136,11 @@ public class PlasmaPool extends AbstractAsset {
             if (projectileVelocity.w <= 0.0f) {
                 
                 projectileVelocity.x = 
-                    game.getCamera().linearVel.x + (game.getTempVect().x * PLASMA_VELOCITY);
+                    game.getCamera().linearVelocity.x + (game.getTempVect().x * PLASMA_VELOCITY);
                 projectileVelocity.y = 
-                    game.getCamera().linearVel.y + (game.getTempVect().y * PLASMA_VELOCITY);
+                    game.getCamera().linearVelocity.y + (game.getTempVect().y * PLASMA_VELOCITY);
                 projectileVelocity.z = 
-                    game.getCamera().linearVel.z + (game.getTempVect().z * PLASMA_VELOCITY);
+                    game.getCamera().linearVelocity.z + (game.getTempVect().z * PLASMA_VELOCITY);
                 projectileVelocity.w = 0.01f;
                 
                 if (!first) {
@@ -151,7 +156,13 @@ public class PlasmaPool extends AbstractAsset {
         }
     }
     
-    public void update(float dt) {
+    @Override
+    public void update(final float dt) {
+        
+        /* Update the shot shader */
+        glUseProgram(prog);
+        glUniformMatrix4fv(default_projUniform, false, game.getMatrixBuffer()); 
+        glUseProgram(0);
         
         for (int i = 0; i < projectilePositions.length; i++) {
             
@@ -159,7 +170,8 @@ public class PlasmaPool extends AbstractAsset {
             if (projectileVelocity.w <= 0.0f) continue;
             projectileVelocity.w += dt;
             Vector3d projectilePosition = projectilePositions[i];            
-            newPosition.set(projectileVelocity.x, projectileVelocity.y, projectileVelocity.z).mul(dt).add(projectilePosition);
+            newPosition.set(projectileVelocity.x, projectileVelocity.y, projectileVelocity.z).mul(
+                    dt).add(projectilePosition);
             
             if (projectileVelocity.w > MAX_LIFE) {
                 projectileVelocity.w = 0.0f;

@@ -30,6 +30,7 @@ import org.joml.Vector3f;
 public class WavefrontMeshLoader {
 
     public static class Mesh {
+        
         public FloatBuffer positions;
         public FloatBuffer normals;
         public int numVertices;
@@ -60,8 +61,7 @@ public class WavefrontMeshLoader {
 
     private boolean fourComponentPosition;
 
-    public WavefrontMeshLoader() {
-    }
+    public WavefrontMeshLoader() { }
 
     public boolean isFourComponentPosition() {
         return fourComponentPosition;

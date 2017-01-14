@@ -3,6 +3,7 @@ package fr.com.jellyfish.sleepersrv.assets.entities;
 import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
 import fr.com.jellyfish.sleepersrv.assets.camera.Camera;
 import fr.com.jellyfish.sleepersrv.constants.GameConst;
+import fr.com.jellyfish.sleepersrv.game.OpenGLGame;
 import fr.com.jellyfish.sleepersrv.opengl.util.WavefrontMeshLoader;
 import fr.com.jellyfish.sleepersrv.opengl.util.WavefrontMeshLoader.Mesh;
 import java.io.IOException;
@@ -39,21 +40,18 @@ public class Asteroid extends AbstractAsset {
     private final int positionVbo;
     private final int normalsVbo;
     private Mesh mesh;
+    private final OpenGLGame game;
     private final Camera camera;
     private final FrustumIntersection frustumIntersection;
-    private final Matrix4f modelMatrix;
-    private final FloatBuffer matrixBuffer;
     private final int default_modelUniform;
     private final int defaultProg;
     
-    public Asteroid(final Camera camera, final FrustumIntersection frustumIntersection, 
-        final Matrix4f modelMatrix, final FloatBuffer matrixBuffer, final int default_modelUniform,
-        final int defaultProg) {
+    public Asteroid(final OpenGLGame game, final Camera camera, final FrustumIntersection frustumIntersection,
+        final int default_modelUniform, final int defaultProg) {
         
+        this.game = game;
         this.camera = camera;
         this.frustumIntersection = frustumIntersection;
-        this.modelMatrix = modelMatrix;
-        this.matrixBuffer = matrixBuffer;
         this.default_modelUniform = default_modelUniform;
         this.defaultProg = defaultProg;
         
@@ -95,13 +93,16 @@ public class Asteroid extends AbstractAsset {
         float tmpy = (float) (y - camera.position.y);
         float tmpz = (float) (z - camera.position.z);
         if (frustumIntersection.testSphere(tmpx, tmpy, tmpz, scale)) {
-            modelMatrix.translation(tmpx, tmpy, tmpz);
-            modelMatrix.scale(scale);
-            glUniformMatrix4fv(default_modelUniform, false, modelMatrix.get(matrixBuffer));
+            game.getViewMatrix().translation(tmpx, tmpy, tmpz);
+            game.getViewMatrix().scale(scale);
+            glUniformMatrix4fv(default_modelUniform, false, game.getViewMatrix().get(game.getMatrixBuffer()));
             glDrawArrays(GL_TRIANGLES, 0, mesh.numVertices);
         }
         
         glDisableClientState(GL_NORMAL_ARRAY);
     }
+
+    @Override
+    public void update(final float dt) { }
     
 }

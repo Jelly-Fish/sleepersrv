@@ -1,5 +1,6 @@
 package fr.com.jellyfish.sleepersrv.assets.camera;
 
+import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
 import fr.com.jellyfish.sleepersrv.assets.entities.Sphere;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
@@ -8,42 +9,41 @@ import org.joml.Vector3f;
 /**
  * @author thw
  */
-public class Camera {
+public class Camera extends AbstractAsset {
 
-    public Vector3f linearAcc = new Vector3f();
-    public Vector3f linearVel = new Vector3f();
+    public Vector3f linearAccelaration = new Vector3f();
+    public Vector3f linearVelocity = new Vector3f();
     float linearDamping = 0.08f;
-    public Vector3f angularAcc = new Vector3f();
-    public Vector3f angularVel = new Vector3f();
+    public Vector3f angularAccelaration = new Vector3f();
+    public Vector3f angularVelocity = new Vector3f();
     float angularDamping = 0.5f;
 
     public Vector3d position = new Vector3d(0, 0, 10);
     public Quaternionf rotation = new Quaternionf();
 
-    public Camera update(final float dt) {
+    @Override
+    public void update(final float dt) {
         
         // update linear velocity based on linear acceleration
-        linearVel.fma(dt, linearAcc);
+        linearVelocity.fma(dt, linearAccelaration);
         // update angular velocity based on angular acceleration
-        angularVel.fma(dt, angularAcc);
+        angularVelocity.fma(dt, angularAccelaration);
         // update the rotation based on the angular velocity
-        rotation.integrate(dt, angularVel.x, angularVel.y, angularVel.z);
-        angularVel.mul(1.0f - angularDamping * dt);
+        rotation.integrate(dt, angularVelocity.x, angularVelocity.y, angularVelocity.z);
+        angularVelocity.mul(1.0f - angularDamping * dt);
         // update position based on linear velocity
-        position.fma(dt, linearVel);
-        linearVel.mul(1.0f - linearDamping * dt);
-        
-        return this;
+        position.fma(dt, linearVelocity);
+        linearVelocity.mul(1.0f - linearDamping * dt);
     }
     
     public void freeze() {        
         // Freeze cam mvt.
-        angularAcc.x = 0f;
-        angularAcc.y = 0f;
-        angularAcc.z = 0f;
-        angularVel.x = 0f;
-        angularVel.y = 0f;
-        angularVel.z = 0f;        
+        angularAccelaration.x = 0f;
+        angularAccelaration.y = 0f;
+        angularAccelaration.z = 0f;
+        angularVelocity.x = 0f;
+        angularVelocity.y = 0f;
+        angularVelocity.z = 0f;        
     }    
     
     public void focusMdl(final Sphere sphere) {          
@@ -63,5 +63,8 @@ public class Camera {
     public Vector3f forward(Vector3f dest) {
         return rotation.positiveZ(dest).negate();
     }
+
+    @Override
+    public void render() { }
 
 }
