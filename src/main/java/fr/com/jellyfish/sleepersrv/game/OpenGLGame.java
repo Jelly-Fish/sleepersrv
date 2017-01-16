@@ -3,9 +3,15 @@ package fr.com.jellyfish.sleepersrv.game;
 import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
 import fr.com.jellyfish.sleepersrv.assets.AbstractPool;
 import fr.com.jellyfish.sleepersrv.assets.camera.Camera;
-import fr.com.jellyfish.sleepersrv.assets.entities.Asteroid;
+import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.AsteroidLowPoly;
+import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.BlockIsland;
+import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.GeoGraphos;
+import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.Golevka;
+import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.Hw1;
 import fr.com.jellyfish.sleepersrv.assets.entities.PlasmaPool;
 import fr.com.jellyfish.sleepersrv.assets.entities.Sphere;
+import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.Toutatis;
+import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.Vesta;
 import fr.com.jellyfish.sleepersrv.assets.globals.Cubemap;
 import fr.com.jellyfish.sleepersrv.assets.globals.VCompass;
 import fr.com.jellyfish.sleepersrv.constants.FrameVars;
@@ -191,7 +197,7 @@ public class OpenGLGame {
     void update(final float dt) {
 
         projMatrix.setPerspective((float) Math.toRadians(40.0f),
-                (float) FrameVars.V_WIDTH / FrameVars.V_HEIGHT, 0.1f, 5000.0f);
+                (float) FrameVars.V_WIDTH / FrameVars.V_HEIGHT, 200f, 500000.0f); // 0.1f, 5000f
         viewMatrix.set(camera.rotation).invert(invViewMatrix);
         viewProjMatrix.set(projMatrix).mul(viewMatrix).invert(invViewProjMatrix);
         frustumIntersection.set(viewProjMatrix);
@@ -273,16 +279,31 @@ public class OpenGLGame {
     private void initEntities() throws IOException {
 
         for (int i = 0; i < 200 ; ++i) {
-            this.assets.put(Asteroid.class.getName() + i, 
-                new Asteroid(this, camera, frustumIntersection, default_modelUniform, defaultProg));
+            this.assets.put(AsteroidLowPoly.class.getName() + i, 
+                new AsteroidLowPoly(this, camera, frustumIntersection, default_modelUniform, defaultProg));
         }
-        
+        this.assets.put(BlockIsland.class.getName(),
+            new BlockIsland(this, camera, frustumIntersection, default_modelUniform, defaultProg,
+            0d, -100d, -5456d, 10f));
+        this.assets.put(GeoGraphos.class.getName(),
+            new GeoGraphos(this, camera, frustumIntersection, default_modelUniform, defaultProg,
+            0d, 0d, -2200d, 10f));
+        this.assets.put(Golevka.class.getName(),
+            new Golevka(this, camera, frustumIntersection, default_modelUniform, defaultProg,
+            0d, 150d, -1200d, 10f));
+        this.assets.put(Hw1.class.getName(),
+            new Hw1(this, camera, frustumIntersection, default_modelUniform, defaultProg,
+            0d, 15d, -3494d, 50f));
+        this.assets.put(Toutatis.class.getName(),
+            new Toutatis(this, camera, frustumIntersection, default_modelUniform, defaultProg,
+            19d, -58d, -994d, 50f));
+        this.assets.put(Vesta.class.getName(),
+            new Vesta(this, camera, frustumIntersection, default_modelUniform, defaultProg,
+            0d, 0d, -6676d, 10f));
         this.assets.put(Sphere.class.getName(), new Sphere(this, camera, frustumIntersection));  
-        
+        this.assets.put(Camera.class.getName(), this.camera);
         this.pools.put(PlasmaPool.class.getName(), new PlasmaPool(this, 
             this.frustumIntersection, this.createPlasmaBallProg(), plasma_projUniform));
- 
-        this.assets.put(Camera.class.getName(), this.camera);
     }
     
     private int createDefaultProg() throws IOException {

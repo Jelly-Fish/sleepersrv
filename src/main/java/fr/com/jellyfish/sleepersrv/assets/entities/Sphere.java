@@ -5,6 +5,7 @@
  */
 package fr.com.jellyfish.sleepersrv.assets.entities;
 
+import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.AsteroidLowPoly;
 import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
 import fr.com.jellyfish.sleepersrv.assets.camera.Camera;
 import fr.com.jellyfish.sleepersrv.game.OpenGLGame;
@@ -16,7 +17,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.joml.FrustumIntersection;
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_NORMAL_ARRAY;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
@@ -68,7 +68,7 @@ public class Sphere extends AbstractAsset {
         try {
             createSphereProg();
         } catch (final IOException iOEx) {
-            Logger.getLogger(Asteroid.class.getName()).log(Level.SEVERE, null, iOEx);
+            Logger.getLogger(AsteroidLowPoly.class.getName()).log(Level.SEVERE, null, iOEx);
         }
         
         this.game = game;
@@ -82,7 +82,7 @@ public class Sphere extends AbstractAsset {
         try {
             this.mesh = loader.loadMesh("fr/com/jellyfish/mdls/goldbergpolyhedron.obj.zip"); 
         } catch (final IOException iOEx) {
-            Logger.getLogger(Asteroid.class.getName()).log(Level.SEVERE, null, iOEx);
+            Logger.getLogger(AsteroidLowPoly.class.getName()).log(Level.SEVERE, null, iOEx);
         }
         
         this.positionVbo = glGenBuffers();
