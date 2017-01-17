@@ -40,7 +40,7 @@ import static org.lwjgl.opengl.GL20.glUseProgram;
  *
  * @author thw
  */
-public class Sphere extends AbstractAsset {
+public class NavigationEntity extends AbstractAsset {
     
     /**
      * Velocity constants.
@@ -63,10 +63,11 @@ public class Sphere extends AbstractAsset {
     private double tmpRotationVal = 0.1f;
     private static final float ROTATION_Y_VAL = 0.3f;
     
-    public Sphere(final OpenGLGame game, final Camera camera, final FrustumIntersection frustumIntersection) {
+    public NavigationEntity(final OpenGLGame game, final Camera camera, final FrustumIntersection frustumIntersection,
+        final String mdl) {
                 
         try {
-            createSphereProg();
+            createProg();
         } catch (final IOException iOEx) {
             Logger.getLogger(AsteroidLowPoly.class.getName()).log(Level.SEVERE, null, iOEx);
         }
@@ -75,12 +76,12 @@ public class Sphere extends AbstractAsset {
         this.camera = camera;
         this.frustumIntersection = frustumIntersection;
 
-        this.scale = 2.6f;
+        this.scale = 1.6f;
         
         final WavefrontMeshLoader loader = new WavefrontMeshLoader();
         
         try {
-            this.mesh = loader.loadMesh("fr/com/jellyfish/mdls/goldbergpolyhedron.obj.zip"); 
+            this.mesh = loader.loadMesh(String.format("fr/com/jellyfish/mdls/%s", mdl));
         } catch (final IOException iOEx) {
             Logger.getLogger(AsteroidLowPoly.class.getName()).log(Level.SEVERE, null, iOEx);
         }
@@ -95,10 +96,10 @@ public class Sphere extends AbstractAsset {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     
-    private void createSphereProg() throws IOException {
+    private void createProg() throws IOException {
         
-        int vshader = ShaderUtils.createShader("fr/com/jellyfish/game/sphere_shader/sphere.vs", GL_VERTEX_SHADER);
-        int fshader = ShaderUtils.createShader("fr/com/jellyfish/game/sphere_shader/sphere.fs", GL_FRAGMENT_SHADER);
+        int vshader = ShaderUtils.createShader("fr/com/jellyfish/game/mouvable.vs", GL_VERTEX_SHADER);
+        int fshader = ShaderUtils.createShader("fr/com/jellyfish/game/mouvable.fs", GL_FRAGMENT_SHADER);
         this.defaultProg = ProgUtils.createProgram(vshader, fshader);
         glUseProgram(this.defaultProg);
         default_viewUniform = glGetUniformLocation(this.defaultProg, "view");

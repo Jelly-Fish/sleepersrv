@@ -1,7 +1,7 @@
 package fr.com.jellyfish.sleepersrv.assets.camera;
 
 import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
-import fr.com.jellyfish.sleepersrv.assets.entities.Sphere;
+import fr.com.jellyfish.sleepersrv.assets.entities.NavigationEntity;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -46,7 +46,7 @@ public class Camera extends AbstractAsset {
         angularVelocity.z = 0f;        
     }    
     
-    public void focusMdl(final Sphere sphere) {          
+    public void focusMdl(final NavigationEntity sphere) {          
         // re-center on main mdl. Param0 = main mdl.
         this.freeze();
         rotation = new Quaternionf();

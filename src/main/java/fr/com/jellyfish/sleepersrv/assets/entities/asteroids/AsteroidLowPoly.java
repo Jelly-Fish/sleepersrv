@@ -61,7 +61,7 @@ public class AsteroidLowPoly extends AbstractAsset {
         final WavefrontMeshLoader loader = new WavefrontMeshLoader();
         
         try {
-            this.mesh = loader.loadMesh("fr/com/jellyfish/game/asteroid.obj.zip");
+            this.mesh = loader.loadMesh("fr/com/jellyfish/mdls/asteroid.obj.zip");
         } catch (final IOException iOEx) {
             Logger.getLogger(AsteroidLowPoly.class.getName()).log(Level.SEVERE, null, iOEx);
         }

@@ -9,7 +9,7 @@ import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.GeoGraphos;
 import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.Golevka;
 import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.Hw1;
 import fr.com.jellyfish.sleepersrv.assets.entities.PlasmaPool;
-import fr.com.jellyfish.sleepersrv.assets.entities.Sphere;
+import fr.com.jellyfish.sleepersrv.assets.entities.NavigationEntity;
 import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.Toutatis;
 import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.Vesta;
 import fr.com.jellyfish.sleepersrv.assets.globals.Cubemap;
@@ -188,7 +188,7 @@ public class OpenGLGame {
         
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
         this.cubeMap.render();
-        this.vCompass.render(projMatrix, matrixBuffer, viewMatrix, Sphere.MAX_LINEAR_VELOCITY, camera);
+        this.vCompass.render(projMatrix, matrixBuffer, viewMatrix, NavigationEntity.MAX_LINEAR_VELOCITY, camera);
         
         for (AbstractPool pool : pools.values()) pool.render();
         for (AbstractAsset asset : assets.values()) asset.render();      
@@ -197,7 +197,7 @@ public class OpenGLGame {
     void update(final float dt) {
 
         projMatrix.setPerspective((float) Math.toRadians(40.0f),
-                (float) FrameVars.V_WIDTH / FrameVars.V_HEIGHT, 200f, 500000.0f); // 0.1f, 5000f
+                (float) FrameVars.V_WIDTH / FrameVars.V_HEIGHT, 0.1f, 500000.0f);
         viewMatrix.set(camera.rotation).invert(invViewMatrix);
         viewProjMatrix.set(projMatrix).mul(viewMatrix).invert(invViewProjMatrix);
         frustumIntersection.set(viewProjMatrix);
@@ -211,7 +211,7 @@ public class OpenGLGame {
         glUniformMatrix4fv(default_viewUniform, false, viewMatrix.get(matrixBuffer));
         glUniformMatrix4fv(default_projUniform, false, projMatrix.get(matrixBuffer));
         
-        for (AbstractPool pool : pools.values()) pool.update(dt);        
+        //for (AbstractPool pool : pools.values()) pool.update(dt);        
         for (AbstractAsset asset : assets.values()) asset.update(dt);
         
     }
@@ -222,19 +222,19 @@ public class OpenGLGame {
         float rotZ = 0.0f;
         
         if (keyCallback.kDown[GLFW_KEY_O]) {
-            camera.linearAccelaration.fma(Sphere.VELOCITY_THRUST_FACTOR, camera.forward(tempVect));
+            camera.linearAccelaration.fma(NavigationEntity.VELOCITY_THRUST_FACTOR, camera.forward(tempVect));
         }
         
         if (keyCallback.kDown[GLFW_KEY_L]) {
-            camera.linearAccelaration.fma(-Sphere.VELOCITY_THRUST_FACTOR, camera.forward(tempVect));
+            camera.linearAccelaration.fma(-NavigationEntity.VELOCITY_THRUST_FACTOR, camera.forward(tempVect));
         }
         
         if (keyCallback.kDown[GLFW_KEY_RIGHT]) {
-            camera.linearAccelaration.fma(Sphere.STRAFF_THRUST_FACTOR, camera.right(tempVect));
+            camera.linearAccelaration.fma(NavigationEntity.STRAFF_THRUST_FACTOR, camera.right(tempVect));
         }
         
         if (keyCallback.kDown[GLFW_KEY_LEFT]) {
-            camera.linearAccelaration.fma(-Sphere.STRAFF_THRUST_FACTOR, camera.right(tempVect));
+            camera.linearAccelaration.fma(-NavigationEntity.STRAFF_THRUST_FACTOR, camera.right(tempVect));
         }
         
         if (keyCallback.kDown[GLFW_KEY_K]) {
@@ -246,11 +246,11 @@ public class OpenGLGame {
         }
         
         if (keyCallback.kDown[GLFW_KEY_UP]) {
-            camera.linearAccelaration.fma(Sphere.STRAFF_THRUST_FACTOR, camera.up(tempVect));
+            camera.linearAccelaration.fma(NavigationEntity.STRAFF_THRUST_FACTOR, camera.up(tempVect));
         }
         
         if (keyCallback.kDown[GLFW_KEY_DOWN]) {
-            camera.linearAccelaration.fma(-Sphere.STRAFF_THRUST_FACTOR, camera.up(tempVect));
+            camera.linearAccelaration.fma(-NavigationEntity.STRAFF_THRUST_FACTOR, camera.up(tempVect));
         }
 
         if (keyCallback.kDown[GLFW_KEY_SPACE] && (lastTime - lastShotTime >= 1E6 * PlasmaPool.SPAWN_MS)) {
@@ -260,7 +260,7 @@ public class OpenGLGame {
         
         if (keyCallback.kDown[GLFW_KEY_P]) camera.freeze();        
         if (keyCallback.kDown[GLFW_KEY_ENTER]) {
-            camera.focusMdl((Sphere) assets.get(Sphere.class.getName()));
+            camera.focusMdl((NavigationEntity) assets.get(NavigationEntity.class.getName()));
         } 
         
         if (rightMouseDown) {
@@ -270,8 +270,8 @@ public class OpenGLGame {
         }
         
         double linearVelAbs = camera.linearVelocity.length();
-        if (linearVelAbs > Sphere.MAX_LINEAR_VELOCITY) {
-            camera.linearVelocity.normalize().mul(Sphere.MAX_LINEAR_VELOCITY);
+        if (linearVelAbs > NavigationEntity.MAX_LINEAR_VELOCITY) {
+            camera.linearVelocity.normalize().mul(NavigationEntity.MAX_LINEAR_VELOCITY);
         }        
         
     }
@@ -282,9 +282,14 @@ public class OpenGLGame {
             this.assets.put(AsteroidLowPoly.class.getName() + i, 
                 new AsteroidLowPoly(this, camera, frustumIntersection, default_modelUniform, defaultProg));
         }
+        
+        this.assets.put(Camera.class.getName(), this.camera);
+        this.assets.put(NavigationEntity.class.getName(), 
+            new NavigationEntity(this, camera, frustumIntersection, "cassini.obj.zip"));
+        
         this.assets.put(BlockIsland.class.getName(),
             new BlockIsland(this, camera, frustumIntersection, default_modelUniform, defaultProg,
-            0d, -100d, -5456d, 10f));
+            0d, -100d, -8456d, 10f));
         this.assets.put(GeoGraphos.class.getName(),
             new GeoGraphos(this, camera, frustumIntersection, default_modelUniform, defaultProg,
             0d, 0d, -2200d, 10f));
@@ -299,9 +304,7 @@ public class OpenGLGame {
             19d, -58d, -994d, 50f));
         this.assets.put(Vesta.class.getName(),
             new Vesta(this, camera, frustumIntersection, default_modelUniform, defaultProg,
-            0d, 0d, -6676d, 10f));
-        this.assets.put(Sphere.class.getName(), new Sphere(this, camera, frustumIntersection));  
-        this.assets.put(Camera.class.getName(), this.camera);
+            0d, 0d, -6676d, 10f)); 
         this.pools.put(PlasmaPool.class.getName(), new PlasmaPool(this, 
             this.frustumIntersection, this.createPlasmaBallProg(), plasma_projUniform));
     }
