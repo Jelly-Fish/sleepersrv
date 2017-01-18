@@ -98,8 +98,8 @@ public class NavigationEntity extends AbstractAsset {
     
     private void createProg() throws IOException {
         
-        int vshader = ShaderUtils.createShader("fr/com/jellyfish/game/mouvable.vs", GL_VERTEX_SHADER);
-        int fshader = ShaderUtils.createShader("fr/com/jellyfish/game/mouvable.fs", GL_FRAGMENT_SHADER);
+        int vshader = ShaderUtils.createShader("fr/com/jellyfish/shader/mouvable.vs", GL_VERTEX_SHADER);
+        int fshader = ShaderUtils.createShader("fr/com/jellyfish/shader/mouvable.fs", GL_FRAGMENT_SHADER);
         this.defaultProg = ProgUtils.createProgram(vshader, fshader);
         glUseProgram(this.defaultProg);
         default_viewUniform = glGetUniformLocation(this.defaultProg, "view");

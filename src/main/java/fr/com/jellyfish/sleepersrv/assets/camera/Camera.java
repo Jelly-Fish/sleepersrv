@@ -13,12 +13,12 @@ public class Camera extends AbstractAsset {
 
     public Vector3f linearAccelaration = new Vector3f();
     public Vector3f linearVelocity = new Vector3f();
-    float linearDamping = 0.08f;
+    float linearDamping = 0.08f; // linear speed damping.
     public Vector3f angularAccelaration = new Vector3f();
     public Vector3f angularVelocity = new Vector3f();
-    float angularDamping = 0.5f;
+    float angularDamping = 0.5f; // angular speed damping.
 
-    public Vector3d position = new Vector3d(0, 0, 10);
+    public Vector3d position = new Vector3d(0, 0, 0);
     public Quaternionf rotation = new Quaternionf();
 
     @Override

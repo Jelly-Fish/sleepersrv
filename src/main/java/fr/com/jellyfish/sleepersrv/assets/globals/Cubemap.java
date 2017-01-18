@@ -78,8 +78,8 @@ public class Cubemap extends AbstractAsset {
          
     public void createCubemapProg() throws IOException {
         
-        int vshader = ShaderUtils.createShader("fr/com/jellyfish/game/cubemap.vs", GL_VERTEX_SHADER);
-        int fshader = ShaderUtils.createShader("fr/com/jellyfish/game/cubemap.fs", GL_FRAGMENT_SHADER);
+        int vshader = ShaderUtils.createShader("fr/com/jellyfish/shader/cubemap.vs", GL_VERTEX_SHADER);
+        int fshader = ShaderUtils.createShader("fr/com/jellyfish/shader/cubemap.fs", GL_FRAGMENT_SHADER);
         int program = ProgUtils.createProgram(vshader, fshader);
         glUseProgram(program);
         int texLocation = glGetUniformLocation(program, "tex");

@@ -44,7 +44,7 @@ public class VCompass extends AbstractAsset {
     
     public void createMesh() throws IOException {
         WavefrontMeshLoader loader = new WavefrontMeshLoader();
-        mesh = loader.loadMesh("fr/com/jellyfish/game/sphere.obj.zip");
+        mesh = loader.loadMesh("fr/com/jellyfish/mdls/sphere.obj.zip");
     }
     
     public void render(final Matrix4f projMatrix, final FloatBuffer matrixBuffer, 

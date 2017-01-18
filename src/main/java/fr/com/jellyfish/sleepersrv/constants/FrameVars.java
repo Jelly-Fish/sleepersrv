@@ -10,6 +10,7 @@ public class FrameVars implements Serializable {
     static {
         FrameVars.V_HEIGHT = FrameConst.FRM_HEIGHT;
         FrameVars.V_WIDTH = (int) (FrameVars.V_HEIGHT * FrameConst.NOMBRE_OR);
+        FrameVars.ADD_VIEWPORT = FrameConst.FRM_HEIGHT;
     };
     
     /**
@@ -21,5 +22,10 @@ public class FrameVars implements Serializable {
      * Frame height = width * nombre d'or.
      */
     public static Integer V_HEIGHT;
+    
+    /**
+     * 
+     */
+    public static int ADD_VIEWPORT;
     
 }

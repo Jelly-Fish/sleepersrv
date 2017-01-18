@@ -172,7 +172,7 @@ public class OpenGLGame {
 
             glfwPollEvents();
             glViewport(0, 0, FrameVars.V_WIDTH, FrameVars.V_HEIGHT);
-            
+
             thisTime = System.nanoTime();
             dt = (thisTime - lastTime) / 1E9f;
             lastTime = thisTime;
@@ -197,7 +197,7 @@ public class OpenGLGame {
     void update(final float dt) {
 
         projMatrix.setPerspective((float) Math.toRadians(40.0f),
-                (float) FrameVars.V_WIDTH / FrameVars.V_HEIGHT, 0.1f, 500000.0f);
+                (float) FrameVars.V_WIDTH / FrameVars.V_HEIGHT, 1f, 500000.0f);
         viewMatrix.set(camera.rotation).invert(invViewMatrix);
         viewProjMatrix.set(projMatrix).mul(viewMatrix).invert(invViewProjMatrix);
         frustumIntersection.set(viewProjMatrix);
@@ -211,7 +211,7 @@ public class OpenGLGame {
         glUniformMatrix4fv(default_viewUniform, false, viewMatrix.get(matrixBuffer));
         glUniformMatrix4fv(default_projUniform, false, projMatrix.get(matrixBuffer));
         
-        //for (AbstractPool pool : pools.values()) pool.update(dt);        
+        for (AbstractPool pool : pools.values()) pool.update(dt);        
         for (AbstractAsset asset : assets.values()) asset.update(dt);
         
     }
@@ -311,8 +311,8 @@ public class OpenGLGame {
     
     private int createDefaultProg() throws IOException {
         
-        int vshader = ShaderUtils.createShader("fr/com/jellyfish/game/default_shader/default.vs", GL_VERTEX_SHADER);
-        int fshader = ShaderUtils.createShader("fr/com/jellyfish/game/default_shader/default.fs", GL_FRAGMENT_SHADER);
+        int vshader = ShaderUtils.createShader("fr/com/jellyfish/shader/default_shader/default.vs", GL_VERTEX_SHADER);
+        int fshader = ShaderUtils.createShader("fr/com/jellyfish/shader/default_shader/default.fs", GL_FRAGMENT_SHADER);
         int prog = ProgUtils.createProgram(vshader, fshader);
         glUseProgram(prog);
         default_viewUniform = glGetUniformLocation(prog, "view");
@@ -325,8 +325,8 @@ public class OpenGLGame {
        
     private int createPlasmaBallProg() throws IOException {
         
-        int vshader = ShaderUtils.createShader("fr/com/jellyfish/game/shot.vs", GL_VERTEX_SHADER);
-        int fshader = ShaderUtils.createShader("fr/com/jellyfish/game/shot.fs", GL_FRAGMENT_SHADER);
+        int vshader = ShaderUtils.createShader("fr/com/jellyfish/shader/shot.vs", GL_VERTEX_SHADER);
+        int fshader = ShaderUtils.createShader("fr/com/jellyfish/shader/shot.fs", GL_FRAGMENT_SHADER);
         int prog = ProgUtils.createProgram(vshader, fshader);
         glUseProgram(prog);
         plasma_projUniform = glGetUniformLocation(prog, "proj");
