@@ -3,13 +3,13 @@ package fr.com.jellyfish.sleepersrv.game;
 import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
 import fr.com.jellyfish.sleepersrv.assets.AbstractPool;
 import fr.com.jellyfish.sleepersrv.assets.camera.Camera;
-import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.AsteroidLowPoly;
 import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.BlockIsland;
 import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.GeoGraphos;
 import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.Golevka;
 import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.Hw1;
 import fr.com.jellyfish.sleepersrv.assets.entities.PlasmaPool;
 import fr.com.jellyfish.sleepersrv.assets.entities.NavigationEntity;
+import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.GolevkaRand;
 import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.Toutatis;
 import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.Vesta;
 import fr.com.jellyfish.sleepersrv.assets.globals.Cubemap;
@@ -171,7 +171,8 @@ public class OpenGLGame {
         while (!glfwWindowShouldClose(window)) {
 
             glfwPollEvents();
-            glViewport(0, 0, FrameVars.V_WIDTH, FrameVars.V_HEIGHT);
+            glViewport(-FrameVars.V_WIDTH, -FrameVars.V_HEIGHT, 
+                FrameVars.ADD_VIEWPORT_WIDTH, FrameVars.ADD_VIEWPORT_HEIGHT);
 
             thisTime = System.nanoTime();
             dt = (thisTime - lastTime) / 1E9f;
@@ -279,8 +280,8 @@ public class OpenGLGame {
     private void initEntities() throws IOException {
 
         for (int i = 0; i < 200 ; ++i) {
-            this.assets.put(AsteroidLowPoly.class.getName() + i, 
-                new AsteroidLowPoly(this, camera, frustumIntersection, default_modelUniform, defaultProg));
+            this.assets.put(GolevkaRand.class.getName() + i, 
+                new GolevkaRand(this, camera, frustumIntersection, default_modelUniform, defaultProg));
         }
         
         this.assets.put(Camera.class.getName(), this.camera);
@@ -301,10 +302,10 @@ public class OpenGLGame {
             0d, 15d, -3494d, 50f));
         this.assets.put(Toutatis.class.getName(),
             new Toutatis(this, camera, frustumIntersection, default_modelUniform, defaultProg,
-            19d, -58d, -994d, 50f));
+            19d, -58d, -2694d, 20f));
         this.assets.put(Vesta.class.getName(),
             new Vesta(this, camera, frustumIntersection, default_modelUniform, defaultProg,
-            0d, 0d, -6676d, 10f)); 
+            0d, 0d, -16676d, 10f)); 
         this.pools.put(PlasmaPool.class.getName(), new PlasmaPool(this, 
             this.frustumIntersection, this.createPlasmaBallProg(), plasma_projUniform));
     }

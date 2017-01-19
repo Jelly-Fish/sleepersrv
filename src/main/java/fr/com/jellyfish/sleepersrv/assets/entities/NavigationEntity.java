@@ -76,7 +76,7 @@ public class NavigationEntity extends AbstractAsset {
         this.camera = camera;
         this.frustumIntersection = frustumIntersection;
 
-        this.scale = 1.6f;
+        this.scale = 0.6f;
         
         final WavefrontMeshLoader loader = new WavefrontMeshLoader();
         
@@ -120,8 +120,8 @@ public class NavigationEntity extends AbstractAsset {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         float tmpx = (float) camera.rotation.positiveX(new Vector3f()).x - 1f;
-        float tmpy = (float) camera.rotation.positiveY(new Vector3f()).y - 3f;
-        float tmpz = (float) camera.rotation.positiveZ(new Vector3f()).z - 20f;
+        float tmpy = (float) camera.rotation.positiveY(new Vector3f()).y - 2f;
+        float tmpz = (float) camera.rotation.positiveZ(new Vector3f()).z - 30f;
 
         if (frustumIntersection.testSphere(tmpx, tmpy, tmpz, scale)) {
                                     

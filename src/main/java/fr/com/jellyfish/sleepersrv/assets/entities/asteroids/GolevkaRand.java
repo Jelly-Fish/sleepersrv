@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.com.jellyfish.sleepersrv.assets.entities.asteroids;
 
 import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
 import fr.com.jellyfish.sleepersrv.assets.camera.Camera;
+import fr.com.jellyfish.sleepersrv.constants.GameConst;
 import fr.com.jellyfish.sleepersrv.game.OpenGLGame;
 import fr.com.jellyfish.sleepersrv.opengl.util.WavefrontMeshLoader;
 import java.io.IOException;
@@ -30,11 +26,12 @@ import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 
 /**
- *
  * @author thw
  */
-public class Vesta extends AbstractAsset {
+public class GolevkaRand extends AbstractAsset {
     
+    private static int rand = 0;
+    private static final float MAX_RADIUS = 30.0f;
     private double x, y, z;
     private float scale;
     private final int positionVbo;
@@ -46,9 +43,8 @@ public class Vesta extends AbstractAsset {
     private final int default_modelUniform;
     private final int defaultProg;
     
-    public Vesta(final OpenGLGame game, final Camera camera, final FrustumIntersection frustumIntersection,
-        final int default_modelUniform, final int defaultProg, final double x, final double y, 
-        final double z, final float scale) {
+    public GolevkaRand(final OpenGLGame game, final Camera camera, final FrustumIntersection frustumIntersection,
+        final int default_modelUniform, final int defaultProg) {
         
         this.game = game;
         this.camera = camera;
@@ -56,15 +52,19 @@ public class Vesta extends AbstractAsset {
         this.default_modelUniform = default_modelUniform;
         this.defaultProg = defaultProg;
         
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.scale = scale;
+        this.x = (Math.random() - 0.5) * GameConst.SPREADOUT_3000;
+        this.y = (Math.random() - 0.5) * GameConst.SPREADOUT_3000;
+        this.z = ((Math.random() - 0.5) * GameConst.SPREADOUT_3000) - 5800f;
+        this.scale = (float) ((Math.random() * 0.5 + 0.5) * GolevkaRand.MAX_RADIUS);
         
         final WavefrontMeshLoader loader = new WavefrontMeshLoader();
         
         try {
-            this.mesh = loader.loadMesh("fr/com/jellyfish/mdls/vesta.obj.zip");
+            rand = rand > 9 ? 0 : rand;
+            this.mesh = loader.loadMesh(
+                String.format("fr/com/jellyfish/mdls/golevka_rotations/golevka_r%s.obj.zip",
+                    String.valueOf(rand))); 
+            ++rand;
         } catch (final IOException iOEx) {
             Logger.getLogger(AsteroidLowPoly.class.getName()).log(Level.SEVERE, null, iOEx);
         }
