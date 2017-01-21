@@ -1,8 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * # sleepersrv, openGl & LWJGL3 + joml fun.
+ * LWJGL 3 3d workshop
+ * Maven project with joml and LWJGL3
+ * All credits www.lwjgl.org & https://github.com/LWJGL/lwjgl3
+ * All model credits https://nasa3d.arc.nasa.gov/
  */
+
 package fr.com.jellyfish.sleepersrv.opengl.util;
 
 import java.io.IOException;

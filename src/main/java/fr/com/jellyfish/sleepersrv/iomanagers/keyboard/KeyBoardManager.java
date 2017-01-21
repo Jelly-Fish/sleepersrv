@@ -1,6 +1,13 @@
+/**
+ * # sleepersrv, openGl & LWJGL3 + joml fun.
+ * LWJGL 3 3d workshop
+ * Maven project with joml and LWJGL3
+ * All credits www.lwjgl.org & https://github.com/LWJGL/lwjgl3
+ * All model credits https://nasa3d.arc.nasa.gov/
+ */
+
 package fr.com.jellyfish.sleepersrv.iomanagers.keyboard;
 
-import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_UNKNOWN;
