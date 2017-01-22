@@ -10,6 +10,8 @@ package fr.com.jellyfish.sleepersrv.assets.entities.asteroids;
 
 import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
 import fr.com.jellyfish.sleepersrv.assets.camera.Camera;
+import fr.com.jellyfish.sleepersrv.assets.mesh.Mesh;
+import fr.com.jellyfish.sleepersrv.constants.FileConst;
 import fr.com.jellyfish.sleepersrv.game.OpenGLGame;
 import fr.com.jellyfish.sleepersrv.opengl.util.WavefrontMeshLoader;
 import java.io.IOException;
@@ -42,7 +44,7 @@ public class Toutatis extends AbstractAsset {
     private float scale;
     private final int positionVbo;
     private final int normalsVbo;
-    private WavefrontMeshLoader.Mesh mesh;
+    private Mesh mesh;
     private final OpenGLGame game;
     private final Camera camera;
     private final FrustumIntersection frustumIntersection;
@@ -67,7 +69,7 @@ public class Toutatis extends AbstractAsset {
         final WavefrontMeshLoader loader = new WavefrontMeshLoader();
         
         try {
-            this.mesh = loader.loadMesh("fr/com/jellyfish/mdls/toutatis.obj.zip");
+            this.mesh = loader.loadMesh(FileConst.RES + FileConst.MDLS + "toutatis.obj.zip");
         } catch (final IOException iOEx) {
             Logger.getLogger(AsteroidLowPoly.class.getName()).log(Level.SEVERE, null, iOEx);
         }
@@ -107,6 +109,10 @@ public class Toutatis extends AbstractAsset {
     }
 
     @Override
-    public void update(final float dt) { }
+    public void update(final float dt) { 
+        
+        x += 0.5d;
+        z -= 0.6d;
+    }
     
 }

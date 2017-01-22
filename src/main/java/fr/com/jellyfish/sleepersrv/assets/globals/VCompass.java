@@ -10,6 +10,8 @@ package fr.com.jellyfish.sleepersrv.assets.globals;
 
 import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
 import fr.com.jellyfish.sleepersrv.assets.camera.Camera;
+import fr.com.jellyfish.sleepersrv.assets.mesh.Mesh;
+import fr.com.jellyfish.sleepersrv.constants.FileConst;
 import fr.com.jellyfish.sleepersrv.opengl.util.WavefrontMeshLoader;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -48,11 +50,11 @@ import static org.lwjgl.opengl.GL20.glUseProgram;
  */
 public class VCompass extends AbstractAsset {
 
-    private WavefrontMeshLoader.Mesh mesh;
+    private Mesh mesh;
     
     public void createMesh() throws IOException {
         WavefrontMeshLoader loader = new WavefrontMeshLoader();
-        mesh = loader.loadMesh("fr/com/jellyfish/mdls/sphere.obj.zip");
+        mesh = loader.loadMesh(FileConst.RES + FileConst.MDLS + "sphere.obj.zip");
     }
     
     public void render(final Matrix4f projMatrix, final FloatBuffer matrixBuffer, 

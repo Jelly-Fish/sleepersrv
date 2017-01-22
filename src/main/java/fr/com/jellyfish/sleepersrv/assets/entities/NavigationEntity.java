@@ -11,6 +11,8 @@ package fr.com.jellyfish.sleepersrv.assets.entities;
 import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.AsteroidLowPoly;
 import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
 import fr.com.jellyfish.sleepersrv.assets.camera.Camera;
+import fr.com.jellyfish.sleepersrv.assets.mesh.Mesh;
+import fr.com.jellyfish.sleepersrv.constants.FileConst;
 import fr.com.jellyfish.sleepersrv.game.OpenGLGame;
 import fr.com.jellyfish.sleepersrv.opengl.util.ProgUtils;
 import fr.com.jellyfish.sleepersrv.opengl.util.ShaderUtils;
@@ -55,7 +57,7 @@ public class NavigationEntity extends AbstractAsset {
     private float scale;
     private final int positionVbo;
     private final int normalsVbo;
-    private WavefrontMeshLoader.Mesh mesh;
+    private Mesh mesh;
     private final OpenGLGame game;
     private final Camera camera;
     private final FrustumIntersection frustumIntersection;
@@ -84,7 +86,7 @@ public class NavigationEntity extends AbstractAsset {
         final WavefrontMeshLoader loader = new WavefrontMeshLoader();
         
         try {
-            this.mesh = loader.loadMesh(String.format("fr/com/jellyfish/mdls/%s", mdl));
+            this.mesh = loader.loadMesh(String.format(FileConst.RES + FileConst.MDLS + "%s", mdl));
         } catch (final IOException iOEx) {
             Logger.getLogger(AsteroidLowPoly.class.getName()).log(Level.SEVERE, null, iOEx);
         }
@@ -101,8 +103,10 @@ public class NavigationEntity extends AbstractAsset {
     
     private void createProg() throws IOException {
         
-        int vshader = ShaderUtils.createShader("fr/com/jellyfish/shader/mouvable.vs", GL_VERTEX_SHADER);
-        int fshader = ShaderUtils.createShader("fr/com/jellyfish/shader/mouvable.fs", GL_FRAGMENT_SHADER);
+        int vshader = ShaderUtils.createShader(FileConst.RES + FileConst.SHD + 
+            "mouvable.vs", GL_VERTEX_SHADER);
+        int fshader = ShaderUtils.createShader(FileConst.RES + FileConst.SHD + 
+            "mouvable.fs", GL_FRAGMENT_SHADER);
         this.defaultProg = ProgUtils.createProgram(vshader, fshader);
         glUseProgram(this.defaultProg);
         default_viewUniform = glGetUniformLocation(this.defaultProg, "view");

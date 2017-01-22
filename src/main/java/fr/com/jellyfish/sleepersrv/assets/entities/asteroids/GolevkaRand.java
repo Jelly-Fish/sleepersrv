@@ -10,6 +10,8 @@ package fr.com.jellyfish.sleepersrv.assets.entities.asteroids;
 
 import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
 import fr.com.jellyfish.sleepersrv.assets.camera.Camera;
+import fr.com.jellyfish.sleepersrv.assets.mesh.Mesh;
+import fr.com.jellyfish.sleepersrv.constants.FileConst;
 import fr.com.jellyfish.sleepersrv.constants.GameConst;
 import fr.com.jellyfish.sleepersrv.game.OpenGLGame;
 import fr.com.jellyfish.sleepersrv.opengl.util.WavefrontMeshLoader;
@@ -44,7 +46,7 @@ public class GolevkaRand extends AbstractAsset {
     private float scale;
     private final int positionVbo;
     private final int normalsVbo;
-    private WavefrontMeshLoader.Mesh mesh;
+    private Mesh mesh;
     private final OpenGLGame game;
     private final Camera camera;
     private final FrustumIntersection frustumIntersection;
@@ -70,7 +72,7 @@ public class GolevkaRand extends AbstractAsset {
         try {
             rand = rand > 9 ? 0 : rand;
             this.mesh = loader.loadMesh(
-                String.format("fr/com/jellyfish/mdls/golevka_rotations/golevka_r%s.obj.zip",
+                String.format(FileConst.RES + FileConst.MDLS + "golevka_rotations/golevka_r%s.obj.zip",
                     String.valueOf(rand))); 
             ++rand;
         } catch (final IOException iOEx) {

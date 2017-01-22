@@ -21,19 +21,19 @@ import org.joml.Vector4f;
  */
 public class Std430Writer {
 
-    private static final Map<Class<?>, Integer> SIZES = new IdentityHashMap<Class<?>, Integer>();
+    private static final Map<Class<?>, Integer> SIZES = new IdentityHashMap<>();
     static {
-        SIZES.put(int.class, Integer.valueOf(1));
-        SIZES.put(float.class, Integer.valueOf(1));
-        SIZES.put(Vector3f.class, Integer.valueOf(3));
-        SIZES.put(Vector4f.class, Integer.valueOf(4));
+        SIZES.put(int.class, 1);
+        SIZES.put(float.class, 1);
+        SIZES.put(Vector3f.class, 3);
+        SIZES.put(Vector4f.class, 4);
     }
-    private static final Map<Class<?>, Integer> ALIGNMENTS = new IdentityHashMap<Class<?>, Integer>();
+    private static final Map<Class<?>, Integer> ALIGNMENTS = new IdentityHashMap<>();
     static {
-        ALIGNMENTS.put(int.class, Integer.valueOf(1));
-        ALIGNMENTS.put(float.class, Integer.valueOf(1));
-        ALIGNMENTS.put(Vector3f.class, Integer.valueOf(4));
-        ALIGNMENTS.put(Vector4f.class, Integer.valueOf(4));
+        ALIGNMENTS.put(int.class, 1);
+        ALIGNMENTS.put(float.class, 1);
+        ALIGNMENTS.put(Vector3f.class, 4);
+        ALIGNMENTS.put(Vector4f.class, 4);
     }
 
     /**
@@ -42,6 +42,7 @@ public class Std430Writer {
      * <p>
      * The GLSL types vec3 and vec4 are mapped to the JOML types {@link Vector3f} and {@link Vector4f}, respectively.
      * 
+     * @param <T>
      * @param list
      *          the list containing the struct objects to write
      * @param clazz
@@ -64,14 +65,14 @@ public class Std430Writer {
                 Member mem = f.getAnnotation(Member.class);
                 len = mem.length();
             }
-            int align = ALIGNMENTS.get(t).intValue();
+            int align = ALIGNMENTS.get(t);
             largestAlign = Math.max(largestAlign, align);
             if (i >= 1) {
                 int neededPadding = (align - ints % align) % align;
                 paddings[i - 1] = neededPadding;
                 ints += neededPadding;
             }
-            int size = SIZES.get(t).intValue() * len;
+            int size = SIZES.get(t) * len;
             ints += size;
         }
         /* Compute padding at the end of the struct */
@@ -84,7 +85,7 @@ public class Std430Writer {
                 Field f = fields[i];
                 try {
                     writeField(f, t, bb);
-                } catch (Exception e) {
+                } catch (final IllegalArgumentException | IllegalAccessException e) {
                     throw new RuntimeException("Could not write struct field: " + f, e);
                 }
                 // Write padding
@@ -96,6 +97,7 @@ public class Std430Writer {
     }
 
     private static <T> void writeField(Field f, T obj, DynamicByteBuffer bb) throws IllegalArgumentException, IllegalAccessException {
+        
         Class<?> t = f.getType();
         if (t == int.class)
             bb.putInt(f.getInt(obj));
@@ -114,8 +116,9 @@ public class Std430Writer {
                 else
                     throw new UnsupportedOperationException("NYI");
             }
-        } else
+        } else {
             throw new UnsupportedOperationException("NYI");
+        }
     }
 
 }

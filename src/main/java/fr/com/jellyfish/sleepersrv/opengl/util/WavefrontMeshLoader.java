@@ -4,6 +4,9 @@
  */
 package fr.com.jellyfish.sleepersrv.opengl.util;
 
+import fr.com.jellyfish.sleepersrv.assets.mesh.Mesh;
+import fr.com.jellyfish.sleepersrv.assets.mesh.MeshObject;
+import fr.com.jellyfish.sleepersrv.assets.mesh.ObjWavefrontData;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -11,8 +14,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.zip.ZipInputStream;
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,36 +30,6 @@ import org.joml.Vector3f;
  */
 public class WavefrontMeshLoader {
 
-    public static class Mesh {
-        
-        public FloatBuffer positions;
-        public FloatBuffer normals;
-        public int numVertices;
-        public float boundingSphereRadius;
-        public List<MeshObject> objects = new ArrayList<>();
-    }
-
-    private static class WavefrontInfo {
-        
-        int numberOfVertices;
-        int numberOfFaces;
-        int numberOfNormals;
-    }
-
-    public class MeshObject {
-        
-        public String name;
-        public int first;
-        public int count;
-        public Vector3f min = new Vector3f(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
-        public Vector3f max = new Vector3f(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
-
-        @Override
-        public String toString() {
-            return name + "(" + min + " " + max + ")";
-        }
-    }
-
     private boolean fourComponentPosition;
 
     public WavefrontMeshLoader() { }
@@ -71,27 +42,55 @@ public class WavefrontMeshLoader {
         this.fourComponentPosition = fourComponentPosition;
     }
 
-    private static WavefrontInfo getInfo(BufferedReader reader) throws IOException {
+    private ObjWavefrontData getObjData(final BufferedReader reader) throws IOException {
         
-        String line = "";
-        WavefrontInfo info = new WavefrontInfo();
+        boolean initialized = false;
+        String vLine[] = null;
+        float x, y, z, minX = 0f, minY = 0f, minZ = 0f, maxX = 0f, maxY = 0f, maxZ = 0f;
+        String line = StringUtils.EMPTY;
+        ObjWavefrontData objData = new ObjWavefrontData();
+        
         while (true) {
+            
             line = reader.readLine();
-            if (line == null) {
-                break;
-            }
-            if (line.startsWith("v ")) {
-                info.numberOfVertices++;
+            if (line == null) break;
+            
+            if (line.startsWith("v ")) {   
+                
+                vLine = line.split(" +");
+                x = Float.parseFloat(vLine[1]);
+                y = Float.parseFloat(vLine[2]);
+                z = Float.parseFloat(vLine[3]);
+                
+                if (!initialized) {
+                    initialized = true;
+                    minX = x; maxX = x;
+                    minY = y; maxY = y;
+                    minZ = z; maxZ = z;
+                } else {                    
+                    minX = x < minX ? x : minX;
+                    maxX = x > maxX ? x : maxX;
+                    minY = y < minY ? y : minY;
+                    maxY = y > maxY ? y : maxY;
+                    minZ = z < minZ ? z : minZ;
+                    maxZ = z > maxZ ? z : maxZ;
+                }
+                
+                objData.numberOfVertices++;     
+                
             } else if (line.startsWith("f ")) {
-                info.numberOfFaces++;
+                objData.numberOfFaces++;
             } else if (line.startsWith("vn ")) {
-                info.numberOfNormals++;
+                objData.numberOfNormals++;
             }
         }
-        return info;
+
+        objData.updataData(minX, minY, minZ, maxX, maxY, maxZ);
+        
+        return objData;
     }
 
-    private static byte[] readSingleFileZip(String zipResource) throws IOException {
+    private byte[] readSingleFileZip(String zipResource) throws IOException {
         
         ByteArrayOutputStream baos;
         try (ZipInputStream zipStream = new ZipInputStream(WavefrontMeshLoader.class.getClassLoader().getResourceAsStream(
@@ -104,27 +103,28 @@ public class WavefrontMeshLoader {
                 baos.write(buffer, 0, read);
             }
         }
+        
         return baos.toByteArray();
     }
 
     public Mesh loadMesh(String resource) throws IOException {
         
         byte[] arr = readSingleFileZip(resource);
-        WavefrontInfo info = getInfo(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(arr))));
+        ObjWavefrontData meshData = getObjData(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(arr))));
 
         // Allocate buffers for all vertices/normal
-        ByteBuffer positionByteBuffer = BufferUtils.createByteBuffer(3 * info.numberOfVertices * 4);
-        ByteBuffer normalByteBuffer = BufferUtils.createByteBuffer(3 * info.numberOfNormals * 4);
+        ByteBuffer positionByteBuffer = BufferUtils.createByteBuffer(3 * meshData.numberOfVertices * 4);
+        ByteBuffer normalByteBuffer = BufferUtils.createByteBuffer(3 * meshData.numberOfNormals * 4);
         FloatBuffer positions = positionByteBuffer.asFloatBuffer();
         FloatBuffer normals = normalByteBuffer.asFloatBuffer();
 
         // Allocate buffers for the actual face vertices/normals
-        ByteBuffer positionDataByteBuffer = BufferUtils.createByteBuffer((fourComponentPosition ? 4 : 3) * 3 * info.numberOfFaces * 4);
-        ByteBuffer normalDataByteBuffer = BufferUtils.createByteBuffer(3 * 3 * info.numberOfFaces * 4);
+        ByteBuffer positionDataByteBuffer = BufferUtils.createByteBuffer((fourComponentPosition ? 4 : 3) * 3 * meshData.numberOfFaces * 4);
+        ByteBuffer normalDataByteBuffer = BufferUtils.createByteBuffer(3 * 3 * meshData.numberOfFaces * 4);
         FloatBuffer positionData = positionDataByteBuffer.asFloatBuffer();
         FloatBuffer normalData = normalDataByteBuffer.asFloatBuffer();
 
-        Mesh mesh = new Mesh();
+        final Mesh mesh = new Mesh();
         MeshObject object = null;
 
         float minX = 1E38f, minY = 1E38f, minZ = 1E38f;
@@ -274,6 +274,8 @@ public class WavefrontMeshLoader {
         mesh.positions = positionData;
         mesh.normals = normalData;
         mesh.numVertices = positionData.limit() / (fourComponentPosition ? 4 : 3);
+        
+        mesh.data = meshData;
         
         return mesh;
     }

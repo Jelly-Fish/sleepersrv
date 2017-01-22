@@ -9,6 +9,7 @@
 package fr.com.jellyfish.sleepersrv.assets.globals;
 
 import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
+import fr.com.jellyfish.sleepersrv.constants.FileConst;
 import fr.com.jellyfish.sleepersrv.opengl.util.OpenGLUtils;
 import fr.com.jellyfish.sleepersrv.opengl.util.ProgUtils;
 import fr.com.jellyfish.sleepersrv.opengl.util.ShaderUtils;
@@ -81,8 +82,8 @@ public class Cubemap extends AbstractAsset {
          
     public void createCubemapProg() throws IOException {
         
-        int vshader = ShaderUtils.createShader("fr/com/jellyfish/shader/cubemap.vs", GL_VERTEX_SHADER);
-        int fshader = ShaderUtils.createShader("fr/com/jellyfish/shader/cubemap.fs", GL_FRAGMENT_SHADER);
+        int vshader = ShaderUtils.createShader(FileConst.RES + FileConst.SHD + "cubemap.vs", GL_VERTEX_SHADER);
+        int fshader = ShaderUtils.createShader(FileConst.RES + FileConst.SHD + "cubemap.fs", GL_FRAGMENT_SHADER);
         int program = ProgUtils.createProgram(vshader, fshader);
         glUseProgram(program);
         int texLocation = glGetUniformLocation(program, "tex");
@@ -108,7 +109,7 @@ public class Cubemap extends AbstractAsset {
         
         for (int i = 0; i < 6; i++) {
             
-            imageBuffer = OpenGLUtils.ioResourceToByteBuffer("fr/com/jellyfish/cubemaps/hubbledf/" + names[i] + ".png", 8 * 1024);
+            imageBuffer = OpenGLUtils.ioResourceToByteBuffer(FileConst.RES + FileConst.CUBEMAP + "hubbledf/" + names[i] + ".png", 8 * 1024);
             if (!stbi_info_from_memory(imageBuffer, w, h, comp)) throw new IOException("Failed to read image information: " + 
                 stbi_failure_reason());
             image = stbi_load_from_memory(imageBuffer, w, h, comp, 0);

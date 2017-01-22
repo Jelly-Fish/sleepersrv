@@ -11,17 +11,13 @@ package fr.com.jellyfish.sleepersrv.game;
 import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
 import fr.com.jellyfish.sleepersrv.assets.AbstractPool;
 import fr.com.jellyfish.sleepersrv.assets.camera.Camera;
-import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.BlockIsland;
-import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.GeoGraphos;
-import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.Golevka;
-import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.Hw1;
 import fr.com.jellyfish.sleepersrv.assets.entities.PlasmaPool;
 import fr.com.jellyfish.sleepersrv.assets.entities.NavigationEntity;
-import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.GolevkaRand;
 import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.Toutatis;
 import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.Vesta;
 import fr.com.jellyfish.sleepersrv.assets.globals.Cubemap;
 import fr.com.jellyfish.sleepersrv.assets.globals.VCompass;
+import fr.com.jellyfish.sleepersrv.constants.FileConst;
 import fr.com.jellyfish.sleepersrv.constants.FrameVars;
 import fr.com.jellyfish.sleepersrv.iomanagers.keyboard.KeyBoardManager;
 import fr.com.jellyfish.sleepersrv.iomanagers.mouse.MouseButtonManager;
@@ -287,16 +283,16 @@ public class OpenGLGame {
     
     private void initEntities() throws IOException {
 
-        for (int i = 0; i < 200 ; ++i) {
+        /*for (int i = 0; i < 200 ; ++i) {
             this.assets.put(GolevkaRand.class.getName() + i, 
                 new GolevkaRand(this, camera, frustumIntersection, default_modelUniform, defaultProg));
-        }
+        }*/
         
         this.assets.put(Camera.class.getName(), this.camera);
         this.assets.put(NavigationEntity.class.getName(), 
             new NavigationEntity(this, camera, frustumIntersection, "cassini.obj.zip"));
         
-        this.assets.put(BlockIsland.class.getName(),
+        /*this.assets.put(BlockIsland.class.getName(),
             new BlockIsland(this, camera, frustumIntersection, default_modelUniform, defaultProg,
             0d, -100d, -8456d, 10f));
         this.assets.put(GeoGraphos.class.getName(),
@@ -307,7 +303,7 @@ public class OpenGLGame {
             0d, 150d, -1200d, 10f));
         this.assets.put(Hw1.class.getName(),
             new Hw1(this, camera, frustumIntersection, default_modelUniform, defaultProg,
-            0d, 15d, -3494d, 50f));
+            0d, 15d, -3494d, 50f));*/
         this.assets.put(Toutatis.class.getName(),
             new Toutatis(this, camera, frustumIntersection, default_modelUniform, defaultProg,
             19d, -58d, -2694d, 20f));
@@ -320,8 +316,10 @@ public class OpenGLGame {
     
     private int createDefaultProg() throws IOException {
         
-        int vshader = ShaderUtils.createShader("fr/com/jellyfish/shader/default_shader/default.vs", GL_VERTEX_SHADER);
-        int fshader = ShaderUtils.createShader("fr/com/jellyfish/shader/default_shader/default.fs", GL_FRAGMENT_SHADER);
+        int vshader = ShaderUtils.createShader(FileConst.RES + FileConst.SHD + 
+            "default_shader/default.vs", GL_VERTEX_SHADER);
+        int fshader = ShaderUtils.createShader(FileConst.RES + FileConst.SHD + 
+            "default_shader/default.fs", GL_FRAGMENT_SHADER);
         int prog = ProgUtils.createProgram(vshader, fshader);
         glUseProgram(prog);
         default_viewUniform = glGetUniformLocation(prog, "view");
@@ -334,8 +332,10 @@ public class OpenGLGame {
        
     private int createPlasmaBallProg() throws IOException {
         
-        int vshader = ShaderUtils.createShader("fr/com/jellyfish/shader/shot.vs", GL_VERTEX_SHADER);
-        int fshader = ShaderUtils.createShader("fr/com/jellyfish/shader/shot.fs", GL_FRAGMENT_SHADER);
+        int vshader = ShaderUtils.createShader(FileConst.RES + FileConst.SHD + 
+            "shot.vs", GL_VERTEX_SHADER);
+        int fshader = ShaderUtils.createShader(FileConst.RES + FileConst.SHD + 
+            "shot.fs", GL_FRAGMENT_SHADER);
         int prog = ProgUtils.createProgram(vshader, fshader);
         glUseProgram(prog);
         plasma_projUniform = glGetUniformLocation(prog, "proj");

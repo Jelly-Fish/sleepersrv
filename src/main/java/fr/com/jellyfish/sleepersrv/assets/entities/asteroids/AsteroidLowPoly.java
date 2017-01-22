@@ -10,10 +10,11 @@ package fr.com.jellyfish.sleepersrv.assets.entities.asteroids;
 
 import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
 import fr.com.jellyfish.sleepersrv.assets.camera.Camera;
+import fr.com.jellyfish.sleepersrv.assets.mesh.Mesh;
+import fr.com.jellyfish.sleepersrv.constants.FileConst;
 import fr.com.jellyfish.sleepersrv.constants.GameConst;
 import fr.com.jellyfish.sleepersrv.game.OpenGLGame;
 import fr.com.jellyfish.sleepersrv.opengl.util.WavefrontMeshLoader;
-import fr.com.jellyfish.sleepersrv.opengl.util.WavefrontMeshLoader.Mesh;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -69,7 +70,7 @@ public class AsteroidLowPoly extends AbstractAsset {
         final WavefrontMeshLoader loader = new WavefrontMeshLoader();
         
         try {
-            this.mesh = loader.loadMesh("fr/com/jellyfish/mdls/asteroid.obj.zip");
+            this.mesh = loader.loadMesh(FileConst.RES + FileConst.MDLS + "asteroid.obj.zip");
         } catch (final IOException iOEx) {
             Logger.getLogger(AsteroidLowPoly.class.getName()).log(Level.SEVERE, null, iOEx);
         }
