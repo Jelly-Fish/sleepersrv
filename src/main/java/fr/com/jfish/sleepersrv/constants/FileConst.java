@@ -14,7 +14,7 @@ public class FileConst {
     /**
      * resources file location.
      */
-    public static final String RES = "fr/com/jellyfish/sleepersrv/";
+    public static final String RES = "fr/com/jfish/sleepersrv/";
     
     /**
      * models file location.
