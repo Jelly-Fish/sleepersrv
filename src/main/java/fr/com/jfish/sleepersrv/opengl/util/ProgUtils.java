@@ -16,7 +16,6 @@ import static org.lwjgl.opengl.GL20.glGetProgrami;
 import static org.lwjgl.opengl.GL20.glLinkProgram;
 
 /**
- *
  * @author thw
  */
 public class ProgUtils {

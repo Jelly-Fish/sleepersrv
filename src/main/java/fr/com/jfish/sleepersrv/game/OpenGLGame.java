@@ -192,6 +192,7 @@ public class OpenGLGame {
     void render() {
         
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        
         this.cubeMap.render();
         this.vCompass.render(projMatrix, matrixBuffer, viewMatrix, NavigationEntity.MAX_LINEAR_VELOCITY, camera);
         
@@ -305,8 +306,7 @@ public class OpenGLGame {
             new Hw1(this, camera, frustumIntersection, default_modelUniform, defaultProg,
             0d, 15d, -3494d, 50f));*/
         this.assets.put(Toutatis.class.getName(),
-            new Toutatis(this, camera, frustumIntersection, default_modelUniform, defaultProg,
-            19d, -58d, -2694d, 20f));
+            new Toutatis(this, camera, frustumIntersection, 19d, -58d, -2694d, 20f));
         this.assets.put(Vesta.class.getName(),
             new Vesta(this, camera, frustumIntersection, default_modelUniform, defaultProg,
             0d, 0d, -16676d, 10f)); 
@@ -361,6 +361,18 @@ public class OpenGLGame {
         
     public FloatBuffer getMatrixBuffer() {
         return matrixBuffer;
+    }
+    
+    public int getDefault_viewUniform() {
+        return default_viewUniform;
+    }
+
+    public int getDefault_projUniform() {
+        return default_projUniform;
+    }
+
+    public int getDefault_modelUniform() {
+        return default_modelUniform;
     }
     
     public float getDt() {

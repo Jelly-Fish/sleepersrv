@@ -2,3 +2,5 @@
 /nbactions.xml
 /*.log
 /nb-configuration.xml
+/pootests/nbproject/private/
+/pootests/build/
