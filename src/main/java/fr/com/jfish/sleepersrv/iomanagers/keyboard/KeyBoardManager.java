@@ -6,7 +6,7 @@
  * All model credits https://nasa3d.arc.nasa.gov/
  */
 
-package fr.com.jellyfish.sleepersrv.iomanagers.keyboard;
+package fr.com.jfish.sleepersrv.iomanagers.keyboard;
 
 import org.lwjgl.glfw.GLFW;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;

@@ -6,14 +6,14 @@
  * All model credits https://nasa3d.arc.nasa.gov/
  */
 
-package fr.com.jellyfish.sleepersrv.assets.entities.asteroids;
+package fr.com.jfish.sleepersrv.assets.entities.asteroids;
 
-import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
-import fr.com.jellyfish.sleepersrv.assets.camera.Camera;
-import fr.com.jellyfish.sleepersrv.assets.mesh.Mesh;
-import fr.com.jellyfish.sleepersrv.constants.FileConst;
-import fr.com.jellyfish.sleepersrv.game.OpenGLGame;
-import fr.com.jellyfish.sleepersrv.opengl.util.WavefrontMeshLoader;
+import fr.com.jfish.sleepersrv.assets.AbstractAsset;
+import fr.com.jfish.sleepersrv.assets.camera.Camera;
+import fr.com.jfish.sleepersrv.assets.mesh.Mesh;
+import fr.com.jfish.sleepersrv.constants.FileConst;
+import fr.com.jfish.sleepersrv.game.OpenGLGame;
+import fr.com.jfish.sleepersrv.opengl.util.WavefrontMeshLoader;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

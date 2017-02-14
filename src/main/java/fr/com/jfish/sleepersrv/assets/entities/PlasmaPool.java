@@ -6,10 +6,10 @@
  * All model credits https://nasa3d.arc.nasa.gov/
  */
 
-package fr.com.jellyfish.sleepersrv.assets.entities;
+package fr.com.jfish.sleepersrv.assets.entities;
 
-import fr.com.jellyfish.sleepersrv.assets.AbstractPool;
-import fr.com.jellyfish.sleepersrv.game.OpenGLGame;
+import fr.com.jfish.sleepersrv.assets.AbstractPool;
+import fr.com.jfish.sleepersrv.game.OpenGLGame;
 import java.nio.FloatBuffer;
 import org.joml.FrustumIntersection;
 import org.joml.Vector3d;

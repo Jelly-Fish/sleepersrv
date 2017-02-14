@@ -2,11 +2,11 @@
  * Copyright LWJGL. All rights reserved.
  * License terms: http://lwjgl.org/license.php
  */
-package fr.com.jellyfish.sleepersrv.opengl.util;
+package fr.com.jfish.sleepersrv.opengl.util;
 
-import fr.com.jellyfish.sleepersrv.assets.mesh.Mesh;
-import fr.com.jellyfish.sleepersrv.assets.mesh.MeshObject;
-import fr.com.jellyfish.sleepersrv.assets.mesh.ObjWavefrontData;
+import fr.com.jfish.sleepersrv.assets.mesh.Mesh;
+import fr.com.jfish.sleepersrv.assets.mesh.MeshObject;
+import fr.com.jfish.sleepersrv.assets.mesh.ObjWavefrontData;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

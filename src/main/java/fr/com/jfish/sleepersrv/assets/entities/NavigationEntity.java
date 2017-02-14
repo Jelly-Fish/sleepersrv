@@ -6,15 +6,15 @@
  * All model credits https://nasa3d.arc.nasa.gov/
  */
 
-package fr.com.jellyfish.sleepersrv.assets.entities;
+package fr.com.jfish.sleepersrv.assets.entities;
 
-import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.AsteroidLowPoly;
-import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
-import fr.com.jellyfish.sleepersrv.assets.camera.Camera;
-import fr.com.jellyfish.sleepersrv.assets.mesh.Mesh;
-import fr.com.jellyfish.sleepersrv.constants.FileConst;
-import fr.com.jellyfish.sleepersrv.game.OpenGLGame;
-import fr.com.jellyfish.sleepersrv.opengl.util.WavefrontMeshLoader;
+import fr.com.jfish.sleepersrv.assets.entities.asteroids.AsteroidLowPoly;
+import fr.com.jfish.sleepersrv.assets.AbstractAsset;
+import fr.com.jfish.sleepersrv.assets.camera.Camera;
+import fr.com.jfish.sleepersrv.assets.mesh.Mesh;
+import fr.com.jfish.sleepersrv.constants.FileConst;
+import fr.com.jfish.sleepersrv.game.OpenGLGame;
+import fr.com.jfish.sleepersrv.opengl.util.WavefrontMeshLoader;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,6 +49,8 @@ public class NavigationEntity extends AbstractAsset {
     public static final float VELOCITY_THRUST_FACTOR = 1024f;        
     public static final float MAX_LINEAR_VELOCITY = 1024f;
     
+    //private Mesh sphere;
+    
     private float scale;
     private final int positionVbo;
     private final int normalsVbo;
@@ -78,6 +80,7 @@ public class NavigationEntity extends AbstractAsset {
         
         try {
             this.mesh = loader.loadMesh(String.format(FileConst.RES + FileConst.MDLS + "%s", mdl));
+            //this.sphere = loader.loadMesh(String.format(FileConst.RES + FileConst.MDLS + "%s", "sphere0.obj.zip"));
         } catch (final IOException iOEx) {
             Logger.getLogger(AsteroidLowPoly.class.getName()).log(Level.SEVERE, null, iOEx);
         }
@@ -89,7 +92,7 @@ public class NavigationEntity extends AbstractAsset {
         this.normalsVbo = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, this.normalsVbo);
         glBufferData(GL_ARRAY_BUFFER, this.mesh.normals, GL_STATIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);        
     }
     
     @Override
@@ -118,8 +121,50 @@ public class NavigationEntity extends AbstractAsset {
         }
         
         glDisableClientState(GL_NORMAL_ARRAY);
-    }
         
+        /*
+        glUseProgram(0);//this.abs_prog);
+        glEnable(GL_BLEND);
+        glVertexPointer(3, GL_FLOAT, 0, mesh.positions);
+        glEnableClientState(GL_NORMAL_ARRAY);
+        glNormalPointer(GL_FLOAT, 0, mesh.normals);
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadMatrixf(game.getProjMatrix().get(game.getMatrixBuffer()));//projMatrix.get(matrixBuffer));
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
+        glTranslatef(0, 0, -2);
+        glMultMatrixf(game.getViewMatrix().get(game.getMatrixBuffer()));  //viewMatrix.get(matrixBuffer));
+        glScalef(this.scale, this.scale, this.scale);
+        glColor3f(0.2f, 0.2f, 0.2f);
+        glDisable(GL_DEPTH_TEST);
+        glDrawArrays(GL_TRIANGLES, 0, mesh.numVertices);
+        glEnable(GL_DEPTH_TEST);
+        glBegin(GL_LINES);
+        glColor4f(1, 0, 0, 1);
+        glVertex3f(0, 0, 0);
+        glVertex3f(1, 0, 0);
+        glColor4f(0, 1, 0, 1);
+        glVertex3f(0, 0, 0);
+        glVertex3f(0, 1, 0);
+        glColor4f(0, 0, 1, 1);
+        glVertex3f(0, 0, 0);
+        glVertex3f(0, 0, 1);
+        glColor4f(1, 1, 1, 1);
+        glVertex3f(0, 0, 0);
+        glVertex3f(camera.linearVelocity.x / 200.0f, camera.linearVelocity.y / 200.0f, 
+            camera.linearVelocity.z / 200.0f);
+        glEnd();
+        glPopMatrix();
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+        glDisableClientState(GL_NORMAL_ARRAY);
+        glDisable(GL_BLEND);
+        */
+    }
+    
     @Override
     public void update(final float dt) { 
         
@@ -134,7 +179,7 @@ public class NavigationEntity extends AbstractAsset {
         glUseProgram(this.abs_prog);
         glUniformMatrix4fv(this.abs_viewUniform, false, game.getViewMatrix().get(game.getMatrixBuffer()));
         glUniformMatrix4fv(this.abs_projUniform, false, game.getProjMatrix().get(game.getMatrixBuffer())); 
-        glUseProgram(0); 
+        glUseProgram(0);
     }
     
 }

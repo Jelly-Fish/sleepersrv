@@ -6,7 +6,7 @@
  * All model credits https://nasa3d.arc.nasa.gov/
  */
 
-package fr.com.jellyfish.sleepersrv.constants;
+package fr.com.jfish.sleepersrv.constants;
 
 import java.io.Serializable;
 

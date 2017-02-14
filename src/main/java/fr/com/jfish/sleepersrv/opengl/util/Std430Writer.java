@@ -2,7 +2,7 @@
  * Copyright LWJGL. All rights reserved.
  * License terms: http://lwjgl.org/license.php
  */
-package fr.com.jellyfish.sleepersrv.opengl.util;
+package fr.com.jfish.sleepersrv.opengl.util;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;

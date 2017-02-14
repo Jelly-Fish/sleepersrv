@@ -6,13 +6,13 @@
  * All model credits https://nasa3d.arc.nasa.gov/
  */
 
-package fr.com.jellyfish.sleepersrv.assets.globals;
+package fr.com.jfish.sleepersrv.assets.globals;
 
-import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
-import fr.com.jellyfish.sleepersrv.assets.camera.Camera;
-import fr.com.jellyfish.sleepersrv.assets.mesh.Mesh;
-import fr.com.jellyfish.sleepersrv.constants.FileConst;
-import fr.com.jellyfish.sleepersrv.opengl.util.WavefrontMeshLoader;
+import fr.com.jfish.sleepersrv.assets.AbstractAsset;
+import fr.com.jfish.sleepersrv.assets.camera.Camera;
+import fr.com.jfish.sleepersrv.assets.mesh.Mesh;
+import fr.com.jfish.sleepersrv.constants.FileConst;
+import fr.com.jfish.sleepersrv.opengl.util.WavefrontMeshLoader;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import org.joml.Matrix4f;

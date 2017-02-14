@@ -6,10 +6,10 @@
  * All model credits https://nasa3d.arc.nasa.gov/
  */
 
-package fr.com.jellyfish.sleepersrv.assets.camera;
+package fr.com.jfish.sleepersrv.assets.camera;
 
-import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
-import fr.com.jellyfish.sleepersrv.assets.entities.NavigationEntity;
+import fr.com.jfish.sleepersrv.assets.AbstractAsset;
+import fr.com.jfish.sleepersrv.assets.entities.NavigationEntity;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.Vector3f;

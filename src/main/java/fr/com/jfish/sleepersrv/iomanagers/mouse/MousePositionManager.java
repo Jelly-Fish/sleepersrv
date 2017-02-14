@@ -6,10 +6,10 @@
  * All model credits https://nasa3d.arc.nasa.gov/
  */
 
-package fr.com.jellyfish.sleepersrv.iomanagers.mouse;
+package fr.com.jfish.sleepersrv.iomanagers.mouse;
 
-import fr.com.jellyfish.sleepersrv.constants.FrameVars;
-import fr.com.jellyfish.sleepersrv.game.OpenGLGame;
+import fr.com.jfish.sleepersrv.constants.FrameVars;
+import fr.com.jfish.sleepersrv.game.OpenGLGame;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 
 /**

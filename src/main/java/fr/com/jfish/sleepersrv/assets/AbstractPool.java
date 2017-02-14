@@ -6,7 +6,7 @@
  * All model credits https://nasa3d.arc.nasa.gov/
  */
 
-package fr.com.jellyfish.sleepersrv.assets;
+package fr.com.jfish.sleepersrv.assets;
 
 /**
  * @author thw

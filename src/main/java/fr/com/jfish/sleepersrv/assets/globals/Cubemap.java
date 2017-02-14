@@ -6,13 +6,13 @@
  * All model credits https://nasa3d.arc.nasa.gov/
  */
 
-package fr.com.jellyfish.sleepersrv.assets.globals;
+package fr.com.jfish.sleepersrv.assets.globals;
 
-import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
-import fr.com.jellyfish.sleepersrv.constants.FileConst;
-import fr.com.jellyfish.sleepersrv.opengl.util.OpenGLUtils;
-import fr.com.jellyfish.sleepersrv.opengl.util.ProgUtils;
-import fr.com.jellyfish.sleepersrv.opengl.util.ShaderUtils;
+import fr.com.jfish.sleepersrv.assets.AbstractAsset;
+import fr.com.jfish.sleepersrv.constants.FileConst;
+import fr.com.jfish.sleepersrv.opengl.util.OpenGLUtils;
+import fr.com.jfish.sleepersrv.opengl.util.ProgUtils;
+import fr.com.jfish.sleepersrv.opengl.util.ShaderUtils;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;

@@ -6,11 +6,11 @@
  * All model credits https://nasa3d.arc.nasa.gov/
  */
 
-package fr.com.jellyfish.sleepersrv.assets;
+package fr.com.jfish.sleepersrv.assets;
 
-import fr.com.jellyfish.sleepersrv.constants.FileConst;
-import fr.com.jellyfish.sleepersrv.opengl.util.ProgUtils;
-import fr.com.jellyfish.sleepersrv.opengl.util.ShaderUtils;
+import fr.com.jfish.sleepersrv.constants.FileConst;
+import fr.com.jfish.sleepersrv.opengl.util.ProgUtils;
+import fr.com.jfish.sleepersrv.opengl.util.ShaderUtils;
 import java.io.IOException;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
 import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;

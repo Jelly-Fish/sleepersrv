@@ -6,7 +6,7 @@
  * All model credits https://nasa3d.arc.nasa.gov/
  */
 
-package fr.com.jellyfish.sleepersrv.opengl.util;
+package fr.com.jfish.sleepersrv.opengl.util;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

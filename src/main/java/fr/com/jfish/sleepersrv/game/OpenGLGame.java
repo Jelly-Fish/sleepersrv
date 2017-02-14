@@ -6,24 +6,24 @@
  * All model credits https://nasa3d.arc.nasa.gov/
  */
 
-package fr.com.jellyfish.sleepersrv.game;
+package fr.com.jfish.sleepersrv.game;
 
-import fr.com.jellyfish.sleepersrv.assets.AbstractAsset;
-import fr.com.jellyfish.sleepersrv.assets.AbstractPool;
-import fr.com.jellyfish.sleepersrv.assets.camera.Camera;
-import fr.com.jellyfish.sleepersrv.assets.entities.PlasmaPool;
-import fr.com.jellyfish.sleepersrv.assets.entities.NavigationEntity;
-import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.Toutatis;
-import fr.com.jellyfish.sleepersrv.assets.entities.asteroids.Vesta;
-import fr.com.jellyfish.sleepersrv.assets.globals.Cubemap;
-import fr.com.jellyfish.sleepersrv.assets.globals.VCompass;
-import fr.com.jellyfish.sleepersrv.constants.FileConst;
-import fr.com.jellyfish.sleepersrv.constants.FrameVars;
-import fr.com.jellyfish.sleepersrv.iomanagers.keyboard.KeyBoardManager;
-import fr.com.jellyfish.sleepersrv.iomanagers.mouse.MouseButtonManager;
-import fr.com.jellyfish.sleepersrv.iomanagers.mouse.MousePositionManager;
-import fr.com.jellyfish.sleepersrv.opengl.util.ProgUtils;
-import fr.com.jellyfish.sleepersrv.opengl.util.ShaderUtils;
+import fr.com.jfish.sleepersrv.assets.AbstractAsset;
+import fr.com.jfish.sleepersrv.assets.AbstractPool;
+import fr.com.jfish.sleepersrv.assets.camera.Camera;
+import fr.com.jfish.sleepersrv.assets.entities.PlasmaPool;
+import fr.com.jfish.sleepersrv.assets.entities.asteroids.Toutatis;
+import fr.com.jfish.sleepersrv.assets.entities.asteroids.Vesta;
+import fr.com.jfish.sleepersrv.assets.globals.Cubemap;
+import fr.com.jfish.sleepersrv.assets.globals.VCompass;
+import fr.com.jfish.sleepersrv.constants.FileConst;
+import fr.com.jfish.sleepersrv.constants.FrameVars;
+import fr.com.jfish.sleepersrv.iomanagers.keyboard.KeyBoardManager;
+import fr.com.jfish.sleepersrv.iomanagers.mouse.MouseButtonManager;
+import fr.com.jfish.sleepersrv.iomanagers.mouse.MousePositionManager;
+import fr.com.jfish.sleepersrv.opengl.util.ProgUtils;
+import fr.com.jfish.sleepersrv.opengl.util.ShaderUtils;
+import fr.com.jfish.sleepersrv.assets.entities.NavigationEntity;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -177,6 +177,7 @@ public class OpenGLGame {
             glfwPollEvents();
             glViewport(-FrameVars.V_WIDTH, -FrameVars.V_HEIGHT, 
                 FrameVars.ADD_VIEWPORT_WIDTH, FrameVars.ADD_VIEWPORT_HEIGHT);
+            //glViewport(0, 0, FrameVars.V_WIDTH, FrameVars.V_HEIGHT);
 
             thisTime = System.nanoTime();
             dt = (thisTime - lastTime) / 1E9f;
@@ -195,7 +196,7 @@ public class OpenGLGame {
         
         this.cubeMap.render();
         this.vCompass.render(projMatrix, matrixBuffer, viewMatrix, NavigationEntity.MAX_LINEAR_VELOCITY, camera);
-        
+               
         for (AbstractPool pool : pools.values()) pool.render();
         for (AbstractAsset asset : assets.values()) asset.render();      
     }
