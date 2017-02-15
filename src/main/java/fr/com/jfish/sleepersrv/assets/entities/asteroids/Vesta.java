@@ -98,7 +98,9 @@ public class Vesta extends AbstractAsset {
         float tmpx = (float) (x - camera.position.x);
         float tmpy = (float) (y - camera.position.y);
         float tmpz = (float) (z - camera.position.z);
+        
         if (frustumIntersection.testSphere(tmpx, tmpy, tmpz, scale)) {
+            
             game.getViewMatrix().translation(tmpx, tmpy, tmpz);
             game.getViewMatrix().scale(scale);
             glUniformMatrix4fv(default_modelUniform, false, game.getViewMatrix().get(game.getMatrixBuffer()));

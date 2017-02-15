@@ -35,7 +35,6 @@ public class KeyBoardManager extends GLFWKeyCallback {
         
         kDown[key] = (action == GLFW_PRESS || action == GLFW_REPEAT);   
         
-        
     }
     
 }

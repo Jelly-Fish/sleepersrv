@@ -20,13 +20,33 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.joml.FrustumIntersection;
 import org.joml.Vector3f;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL11.GL_LINES;
+import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
 import static org.lwjgl.opengl.GL11.GL_NORMAL_ARRAY;
+import static org.lwjgl.opengl.GL11.GL_PROJECTION;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glColor3f;
+import static org.lwjgl.opengl.GL11.glColor4f;
+import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glDisableClientState;
 import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glEnableClientState;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glLoadIdentity;
+import static org.lwjgl.opengl.GL11.glLoadMatrixf;
+import static org.lwjgl.opengl.GL11.glMatrixMode;
+import static org.lwjgl.opengl.GL11.glMultMatrixf;
 import static org.lwjgl.opengl.GL11.glNormalPointer;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glScalef;
+import static org.lwjgl.opengl.GL11.glTranslatef;
+import static org.lwjgl.opengl.GL11.glVertex3f;
 import static org.lwjgl.opengl.GL11.glVertexPointer;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
@@ -112,7 +132,7 @@ public class NavigationEntity extends AbstractAsset {
 
         if (frustumIntersection.testSphere(tmpx, tmpy, tmpz, scale)) {
                                     
-            game.getViewMatrix().translation(tmpx, tmpy, tmpz);             
+            game.getViewMatrix().translation(tmpx, tmpy, tmpz);               
             game.getViewMatrix().rotate(camera.rotation);     
             game.getViewMatrix().scale(scale);
               
@@ -123,45 +143,27 @@ public class NavigationEntity extends AbstractAsset {
         glDisableClientState(GL_NORMAL_ARRAY);
         
         /*
-        glUseProgram(0);//this.abs_prog);
+        glUseProgram(0); //this.abs_prog);
         glEnable(GL_BLEND);
         glVertexPointer(3, GL_FLOAT, 0, mesh.positions);
         glEnableClientState(GL_NORMAL_ARRAY);
         glNormalPointer(GL_FLOAT, 0, mesh.normals);
         glMatrixMode(GL_PROJECTION);
         glPushMatrix();
-        glLoadMatrixf(game.getProjMatrix().get(game.getMatrixBuffer()));//projMatrix.get(matrixBuffer));
+        glLoadMatrixf(game.getProjMatrix().get(game.getMatrixBuffer()));
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glLoadIdentity();
-        glTranslatef(0, 0, -2);
-        glMultMatrixf(game.getViewMatrix().get(game.getMatrixBuffer()));  //viewMatrix.get(matrixBuffer));
+        glTranslatef(0, 0, -15);
+        glMultMatrixf(game.getViewMatrix().get(game.getMatrixBuffer()));
         glScalef(this.scale, this.scale, this.scale);
         glColor3f(0.2f, 0.2f, 0.2f);
         glDisable(GL_DEPTH_TEST);
         glDrawArrays(GL_TRIANGLES, 0, mesh.numVertices);
-        glEnable(GL_DEPTH_TEST);
-        glBegin(GL_LINES);
-        glColor4f(1, 0, 0, 1);
-        glVertex3f(0, 0, 0);
-        glVertex3f(1, 0, 0);
-        glColor4f(0, 1, 0, 1);
-        glVertex3f(0, 0, 0);
-        glVertex3f(0, 1, 0);
-        glColor4f(0, 0, 1, 1);
-        glVertex3f(0, 0, 0);
-        glVertex3f(0, 0, 1);
-        glColor4f(1, 1, 1, 1);
-        glVertex3f(0, 0, 0);
-        glVertex3f(camera.linearVelocity.x / 200.0f, camera.linearVelocity.y / 200.0f, 
-            camera.linearVelocity.z / 200.0f);
-        glEnd();
-        glPopMatrix();
-        glMatrixMode(GL_PROJECTION);
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
         glDisableClientState(GL_NORMAL_ARRAY);
-        glDisable(GL_BLEND);
+        glDisable(GL_BLEND);     
         */
     }
     
@@ -180,6 +182,7 @@ public class NavigationEntity extends AbstractAsset {
         glUniformMatrix4fv(this.abs_viewUniform, false, game.getViewMatrix().get(game.getMatrixBuffer()));
         glUniformMatrix4fv(this.abs_projUniform, false, game.getProjMatrix().get(game.getMatrixBuffer())); 
         glUseProgram(0);
+        
     }
     
 }
